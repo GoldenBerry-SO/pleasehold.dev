@@ -15,7 +15,7 @@ Open source. Self-hostable via Docker.
 ## Quick Start (Docker)
 
 ```bash
-git clone https://github.com/PixelTowers/pleasehold.dev.git
+git clone https://github.com/GoldenBerry-SO/pleasehold.dev.git
 cd pleasehold.dev
 cp .env.example .env
 # Edit .env — set POSTGRES_PASSWORD and BETTER_AUTH_SECRET at minimum
