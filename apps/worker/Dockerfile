@@ -40,7 +40,7 @@ RUN apk add --no-cache bash curl && \
 
 # Infisical credentials must be provided at runtime (docker run -e / k8s secrets),
 # NOT baked into the image. Only INFISICAL_DOMAIN is safe to set as a default.
-ENV INFISICAL_DOMAIN=https://secrets.pixeltowers.io
+ENV INFISICAL_DOMAIN=https://infisical.goldenberry.so
 
 COPY --from=builder /app/ .
 COPY scripts/docker-entrypoint.sh /usr/local/bin/

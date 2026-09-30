@@ -21,13 +21,13 @@ push to main
     |
     v
 [build job]
-    |- Build API Docker image -----> ghcr.io/pixeltowers/pleasehold/api:<sha>
-    |- Build Web Docker image -----> ghcr.io/pixeltowers/pleasehold/web:<sha>
-    |- Build Worker Docker image --> ghcr.io/pixeltowers/pleasehold/worker:<sha>
+    |- Build API Docker image -----> ghcr.io/goldenberry-so/pleasehold/api:<sha>
+    |- Build Web Docker image -----> ghcr.io/goldenberry-so/pleasehold/web:<sha>
+    |- Build Worker Docker image --> ghcr.io/goldenberry-so/pleasehold/worker:<sha>
     |
     v
 [deploy job]
-    |- Checkout PixelTowers/infra repo
+    |- Checkout GoldenBerry-SO/infra repo
     |- kustomize edit set image (all 3 tags)
     |- Commit & push to infra repo (with retry)
     |
@@ -37,7 +37,7 @@ push to main
 
 **Docker images** are tagged with the commit SHA and pushed to GitHub Container Registry (GHCR). The API and Worker images include Infisical CLI for runtime secret injection. The Web image uses nginx to serve the static SPA.
 
-**GitOps deployment** updates the `PixelTowers/infra` repo at `k8s/apps/pleasehold-staging/kustomization.yaml`. An external GitOps controller (e.g., Argo CD or Flux) reconciles the cluster state.
+**GitOps deployment** updates the `GoldenBerry-SO/infra` repo at `k8s/apps/pleasehold/kustomization.yaml`. An external GitOps controller (e.g., Argo CD or Flux) reconciles the cluster state.
 
 **Required secrets:**
 
@@ -47,7 +47,7 @@ push to main
 | `INFISICAL_CLIENT_ID` | Baked into API/Worker images for runtime secret injection |
 | `INFISICAL_CLIENT_SECRET` | Baked into API/Worker images for runtime secret injection |
 | `INFISICAL_PROJECT_ID` | Baked into API/Worker images for runtime secret injection |
-| `INFRA_DEPLOY_TOKEN` | PAT with write access to `PixelTowers/infra` |
+| `INFRA_DEPLOY_KEY` | private half of a write deploy key on `GoldenBerry-SO/infra` |
 
 ### Landing Site Deploy (`deploy-www.yml`)
 
@@ -163,7 +163,7 @@ else
 fi
 ```
 
-Infisical instance: `https://secrets.pixeltowers.io` (self-hosted). Configurable via `INFISICAL_DOMAIN`.
+Infisical instance: `https://infisical.goldenberry.so` (self-hosted). Configurable via `INFISICAL_DOMAIN`.
 
 ## Startup Sequence (Kubernetes)
 

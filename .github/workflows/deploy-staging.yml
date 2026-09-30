@@ -1,4 +1,4 @@
-name: Deploy Staging
+name: Deploy
 
 on:
   push:
@@ -31,7 +31,8 @@ jobs:
           context: .
           file: apps/api/Dockerfile
           push: true
-          tags: ghcr.io/pixeltowers/pleasehold/api:${{ github.sha }}
+          tags: ghcr.io/goldenberry-so/pleasehold/api:${{ github.sha }}
+          labels: org.opencontainers.image.source=https://github.com/GoldenBerry-SO/pleasehold.dev
 
       - name: Build & push Web
         uses: docker/build-push-action@v6
@@ -39,7 +40,8 @@ jobs:
           context: .
           file: apps/web/Dockerfile
           push: true
-          tags: ghcr.io/pixeltowers/pleasehold/web:${{ github.sha }}
+          tags: ghcr.io/goldenberry-so/pleasehold/web:${{ github.sha }}
+          labels: org.opencontainers.image.source=https://github.com/GoldenBerry-SO/pleasehold.dev
           build-args: VITE_API_URL=
 
       - name: Build & push Worker
@@ -48,7 +50,8 @@ jobs:
           context: .
           file: apps/worker/Dockerfile
           push: true
-          tags: ghcr.io/pixeltowers/pleasehold/worker:${{ github.sha }}
+          tags: ghcr.io/goldenberry-so/pleasehold/worker:${{ github.sha }}
+          labels: org.opencontainers.image.source=https://github.com/GoldenBerry-SO/pleasehold.dev
 
   notify-deploy-start:
     needs: build
@@ -59,7 +62,7 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -s -H "Content-Type: application/json" \
-            -d "{\"embeds\":[{\"title\":\"🚀 pleasehold Staging Deploy Started\",\"description\":\"Deploying commit \`${GITHUB_SHA::7}\` to **staging**\",\"color\":3447003,\"fields\":[{\"name\":\"Triggered by\",\"value\":\"${{ github.actor }}\",\"inline\":true},{\"name\":\"Workflow\",\"value\":\"[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\",\"inline\":true}]}]}" \
+            -d "{\"embeds\":[{\"title\":\"🚀 pleasehold Deploy Started\",\"description\":\"Deploying commit \`${GITHUB_SHA::7}\` to **production**\",\"color\":3447003,\"fields\":[{\"name\":\"Triggered by\",\"value\":\"${{ github.actor }}\",\"inline\":true},{\"name\":\"Workflow\",\"value\":\"[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\",\"inline\":true}]}]}" \
             "$DISCORD_WEBHOOK_URL"
 
   deploy:
@@ -68,8 +71,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: PixelTowers/infra
-          token: ${{ secrets.INFRA_DEPLOY_TOKEN }}
+          repository: GoldenBerry-SO/infra
+          # A write deploy key on GoldenBerry-SO/infra, usable only by pushes to main here
+          # (workflow secrets never reach fork PRs on this public repo).
+          ssh-key: ${{ secrets.INFRA_DEPLOY_KEY }}
           ref: main
 
       - name: Install kustomize
@@ -78,23 +83,23 @@ jobs:
           sudo mv kustomize /usr/local/bin/
 
       - name: Update all 3 image tags
-        working-directory: k8s/apps/pleasehold-staging
+        working-directory: k8s/apps/pleasehold
         run: |
           kustomize edit set image \
-            api=ghcr.io/pixeltowers/pleasehold/api:${{ needs.build.outputs.tag }} \
-            web=ghcr.io/pixeltowers/pleasehold/web:${{ needs.build.outputs.tag }} \
-            worker=ghcr.io/pixeltowers/pleasehold/worker:${{ needs.build.outputs.tag }}
+            api=ghcr.io/goldenberry-so/pleasehold/api:${{ needs.build.outputs.tag }} \
+            web=ghcr.io/goldenberry-so/pleasehold/web:${{ needs.build.outputs.tag }} \
+            worker=ghcr.io/goldenberry-so/pleasehold/worker:${{ needs.build.outputs.tag }}
 
       - name: Commit and push with retry
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add k8s/apps/pleasehold-staging/kustomization.yaml
+          git add k8s/apps/pleasehold/kustomization.yaml
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
           fi
-          git commit -m "deploy: pleasehold staging → ${{ needs.build.outputs.tag }}"
+          git commit -m "deploy: pleasehold production → ${{ needs.build.outputs.tag }}"
           for attempt in 1 2 3 4 5; do
             if git push; then exit 0; fi
             echo "Retry $attempt..."
@@ -112,7 +117,7 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -s -H "Content-Type: application/json" \
-            -d "{\"embeds\":[{\"title\":\"✅ pleasehold Staging Deploy Succeeded\",\"description\":\"Commit \`${GITHUB_SHA::7}\` is live on **staging**\",\"color\":3066993,\"fields\":[{\"name\":\"Triggered by\",\"value\":\"${{ github.actor }}\",\"inline\":true},{\"name\":\"Workflow\",\"value\":\"[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\",\"inline\":true}]}]}" \
+            -d "{\"embeds\":[{\"title\":\"✅ pleasehold Deploy Succeeded\",\"description\":\"Commit \`${GITHUB_SHA::7}\` is live on **staging**\",\"color\":3066993,\"fields\":[{\"name\":\"Triggered by\",\"value\":\"${{ github.actor }}\",\"inline\":true},{\"name\":\"Workflow\",\"value\":\"[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\",\"inline\":true}]}]}" \
             "$DISCORD_WEBHOOK_URL"
 
   notify-deploy-failure:
@@ -125,5 +130,5 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -s -H "Content-Type: application/json" \
-            -d "{\"embeds\":[{\"title\":\"❌ pleasehold Staging Deploy Failed\",\"description\":\"Deploy of commit \`${GITHUB_SHA::7}\` to **staging** failed\",\"color\":15158332,\"fields\":[{\"name\":\"Triggered by\",\"value\":\"${{ github.actor }}\",\"inline\":true},{\"name\":\"Workflow\",\"value\":\"[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\",\"inline\":true}]}]}" \
+            -d "{\"embeds\":[{\"title\":\"❌ pleasehold Deploy Failed\",\"description\":\"Deploy of commit \`${GITHUB_SHA::7}\` to **production** failed\",\"color\":15158332,\"fields\":[{\"name\":\"Triggered by\",\"value\":\"${{ github.actor }}\",\"inline\":true},{\"name\":\"Workflow\",\"value\":\"[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\",\"inline\":true}]}]}" \
             "$DISCORD_WEBHOOK_URL"
