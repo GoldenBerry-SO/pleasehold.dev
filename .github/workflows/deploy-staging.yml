@@ -19,11 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # A public repo's GITHUB_TOKEN cannot create org packages, so log in with the
+      # PiXeL16 PAT (the same one the cluster pulls with), which can.
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: PiXeL16
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build & push API
         uses: docker/build-push-action@v6
