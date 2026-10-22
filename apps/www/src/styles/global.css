@@ -1202,7 +1202,7 @@ h2 {
 	justify-content: space-between;
 	gap: 20px;
 	border-top: 1px solid var(--line);
-	padding-block: 23px;
+	padding-block: 23px 70px;
 	font-size: 10px;
 	color: var(--muted);
 }
@@ -2207,9 +2207,6 @@ html[data-motion="on"] [data-motion-scene][data-visible="true"] *::after {
 		right: 10px;
 		font-size: 9px;
 		padding: 7px 10px;
-	}
-	.footer-bottom {
-		padding-bottom: 65px;
 	}
 }
 
