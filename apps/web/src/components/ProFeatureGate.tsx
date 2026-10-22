@@ -47,7 +47,7 @@ export function ProFeatureGate({ children, feature }: ProFeatureGateProps) {
 							capture('upgrade_clicked', { source: 'feature_gate', feature: feature ?? 'unknown' })
 						}
 					>
-						Upgrade &mdash; $19/3 months
+						Upgrade &mdash; €19/3 months
 					</Link>
 				</div>
 			</div>

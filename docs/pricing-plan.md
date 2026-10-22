@@ -4,7 +4,7 @@
 
 Two tiers. That's it.
 
-| | Free | Pro ($19/3 months) |
+| | Free | Pro (€19/3 months) |
 |---|---|---|
 | Entries/mo | 100 | Unlimited |
 | Projects | 1 | Unlimited |

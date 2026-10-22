@@ -3,8 +3,12 @@
 
 import { trpc } from '@/lib/trpc';
 
-export function useSubscription() {
-	return trpc.subscription.get.useQuery();
+export function useSubscription(waitForCheckout = false) {
+	return trpc.subscription.get.useQuery(undefined, {
+		refetchOnMount: waitForCheckout ? 'always' : true,
+		refetchInterval: (query) =>
+			waitForCheckout && query.state.data?.plan !== 'pro' ? 2000 : false,
+	});
 }
 
 export function useSubscriptionUsage() {
