@@ -6,6 +6,7 @@ import { subscriptions } from '@pleasehold/db';
 import { and, eq, isNull, or } from 'drizzle-orm';
 import { Hono } from 'hono';
 import Stripe from 'stripe';
+import { posthog } from '../../lib/posthog';
 
 export function createStripeWebhookRoute(db: Database) {
 	const app = new Hono();
@@ -62,7 +63,7 @@ export function createStripeWebhookRoute(db: Database) {
 			// Keep access during renewal retries; revoke it when Stripe marks the bill unpaid.
 			const plan = ['active', 'trialing', 'past_due'].includes(sub.status) ? 'pro' : 'free';
 
-			await db
+			const changed = await db
 				.update(subscriptions)
 				.set({
 					plan,
@@ -83,7 +84,25 @@ export function createStripeWebhookRoute(db: Database) {
 								: undefined,
 						),
 					),
-				);
+				)
+				.returning({ userId: subscriptions.userId });
+			if (changed.length > 0) {
+				posthog.capture({
+					distinctId: changed[0].userId,
+					event: ended
+						? 'subscription_canceled'
+						: checkoutUserId && plan === 'pro'
+							? 'subscription_upgraded'
+							: 'subscription_updated',
+					properties: {
+						subscriptionId,
+						customerId,
+						status: sub.status,
+						cancelAtPeriodEnd: sub.cancel_at_period_end,
+						$insert_id: event.id,
+					},
+				});
+			}
 		}
 
 		return c.json({ received: true });

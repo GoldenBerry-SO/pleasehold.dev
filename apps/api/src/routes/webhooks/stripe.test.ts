@@ -4,12 +4,14 @@
 import { PgDialect } from 'drizzle-orm/pg-core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { constructEvent, retrieve, update, set, where } = vi.hoisted(() => ({
+const { constructEvent, retrieve, update, set, where, returning, capture } = vi.hoisted(() => ({
 	constructEvent: vi.fn(),
 	retrieve: vi.fn(),
 	update: vi.fn(),
 	set: vi.fn(),
 	where: vi.fn(),
+	returning: vi.fn(),
+	capture: vi.fn(),
 }));
 vi.mock('stripe', () => ({
 	default: class {
@@ -17,6 +19,8 @@ vi.mock('stripe', () => ({
 		subscriptions = { retrieve };
 	},
 }));
+
+vi.mock('../../lib/posthog', () => ({ posthog: { capture } }));
 
 import { createStripeWebhookRoute } from './stripe';
 
@@ -47,7 +51,8 @@ beforeEach(() => {
 	process.env.STRIPE_PRO_PRICE_ID = price;
 	update.mockReturnValue({ set });
 	set.mockReturnValue({ where });
-	where.mockResolvedValue([]);
+	where.mockReturnValue({ returning });
+	returning.mockResolvedValue([{ userId: 'user-1' }]);
 	retrieve.mockResolvedValue(subscription());
 	event();
 });
@@ -79,6 +84,9 @@ describe('Stripe subscription webhooks', () => {
 		expect((await request()).status).toBe(200);
 		expect(set).toHaveBeenCalledWith(
 			expect.objectContaining({ plan: 'pro', stripeSubscriptionId: 'sub_123' }),
+		);
+		expect(capture).toHaveBeenCalledWith(
+			expect.objectContaining({ distinctId: 'user-1', event: 'subscription_upgraded' }),
 		);
 		const query = new PgDialect().sqlToQuery(where.mock.calls[0][0]);
 		expect(query.params).toEqual(['cus_123', 'sub_123', 'user-1']);
@@ -164,7 +172,7 @@ describe('Stripe subscription webhooks', () => {
 		const log = vi.spyOn(console, 'error').mockImplementation(() => {});
 		retrieve.mockRejectedValueOnce(new Error('temporarily unavailable'));
 		expect((await request()).status).toBe(500);
-		where.mockRejectedValueOnce(new Error('database unavailable'));
+		returning.mockRejectedValueOnce(new Error('database unavailable'));
 		expect((await request()).status).toBe(500);
 		log.mockRestore();
 	});
