@@ -1,165 +1,121 @@
-// ABOUTME: Unit tests for the Stripe webhook handler covering subscription lifecycle events.
-// ABOUTME: Mocks Stripe signature verification and DB operations to test event routing and state changes.
+// ABOUTME: Subscription webhook tests for signatures, payment status, retries, and event ordering.
+// ABOUTME: All Stripe and database operations are isolated; no payments or external requests occur.
 
-import type Stripe from 'stripe';
+import { PgDialect } from 'drizzle-orm/pg-core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Mock DB operations
-const mockUpdate = vi.fn();
-const mockSet = vi.fn();
-const mockWhere = vi.fn().mockResolvedValue([]);
+const { constructEvent, retrieve, update, set, where, returning, capture } = vi.hoisted(() => ({
+	constructEvent: vi.fn(),
+	retrieve: vi.fn(),
+	update: vi.fn(),
+	set: vi.fn(),
+	where: vi.fn(),
+	returning: vi.fn(),
+	capture: vi.fn(),
+}));
+vi.mock('stripe', () => ({
+	default: class {
+		webhooks = { constructEvent };
+		subscriptions = { retrieve };
+	},
+}));
 
-// Mock Stripe
-const mockConstructEvent = vi.fn();
-const mockRetrieveSubscription = vi.fn();
-
-vi.mock('stripe', () => {
-	const MockStripe = vi.fn().mockImplementation(function (this: unknown) {
-		(this as Record<string, unknown>).webhooks = {
-			constructEvent: mockConstructEvent,
-		};
-		(this as Record<string, unknown>).subscriptions = {
-			retrieve: mockRetrieveSubscription,
-		};
-	});
-	return { default: MockStripe };
-});
+vi.mock('../../lib/posthog', () => ({ posthog: { capture } }));
 
 import { createStripeWebhookRoute } from './stripe';
 
-function resetDbChain() {
-	mockWhere.mockResolvedValue([]);
-	mockSet.mockReturnValue({ where: mockWhere });
-	mockUpdate.mockReturnValue({ set: mockSet });
+const app = createStripeWebhookRoute({ update } as never);
+const price = 'price_pleasehold';
+const subscription = (status = 'active') => ({
+	id: 'sub_123',
+	customer: 'cus_123',
+	status,
+	metadata: { userId: 'user-1' },
+	items: { data: [{ price: { id: price }, current_period_end: 1800000000 }] },
+	cancel_at_period_end: false,
+});
+function event(type = 'customer.subscription.updated', object: unknown = subscription()) {
+	constructEvent.mockReturnValue({ type, data: { object } });
 }
-
-const mockDb = { update: mockUpdate } as unknown;
-const app = createStripeWebhookRoute(mockDb as never);
-
-function webhookRequest(body: string, signature = 'valid-sig') {
+function request(signature: string | null = 'signed') {
 	return app.request('/', {
 		method: 'POST',
-		body,
-		headers: {
-			'Content-Type': 'application/json',
-			'stripe-signature': signature,
-		},
+		body: '{}',
+		headers: signature ? { 'stripe-signature': signature } : {},
 	});
 }
-
-const PRO_PRICE_ID = 'price_pro_3mo';
-
 beforeEach(() => {
-	vi.clearAllMocks();
-	resetDbChain();
-	process.env.STRIPE_SECRET_KEY = 'sk_test_123';
-	process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_123';
-	process.env.STRIPE_PRO_PRICE_ID = PRO_PRICE_ID;
+	vi.resetAllMocks();
+	process.env.STRIPE_SECRET_KEY = 'sk_test_fixture';
+	process.env.STRIPE_WEBHOOK_SECRET = 'whsec_fixture';
+	process.env.STRIPE_PRO_PRICE_ID = price;
+	update.mockReturnValue({ set });
+	set.mockReturnValue({ where });
+	where.mockReturnValue({ returning });
+	returning.mockResolvedValue([{ userId: 'user-1' }]);
+	retrieve.mockResolvedValue(subscription());
+	event();
 });
 
-describe('Stripe webhook handler', () => {
-	it('returns 500 when Stripe is not configured', async () => {
-		delete process.env.STRIPE_SECRET_KEY;
-		const res = await webhookRequest('{}');
-		expect(res.status).toBe(500);
+describe('Stripe subscription webhooks', () => {
+	it.each([
+		'STRIPE_SECRET_KEY',
+		'STRIPE_WEBHOOK_SECRET',
+		'STRIPE_PRO_PRICE_ID',
+	])('fails closed without %s', async (key) => {
+		delete process.env[key];
+		expect((await request()).status).toBe(500);
+		expect(update).not.toHaveBeenCalled();
 	});
-
-	it('returns 400 when stripe-signature header is missing', async () => {
-		const res = await app.request('/', {
-			method: 'POST',
-			body: '{}',
-			headers: { 'Content-Type': 'application/json' },
+	it('rejects unsigned and incorrectly signed events', async () => {
+		expect((await request(null)).status).toBe(400);
+		constructEvent.mockImplementation(() => {
+			throw new Error('bad signature');
 		});
-		expect(res.status).toBe(400);
-		const body = await res.json();
-		expect(body.error).toBe('Missing stripe-signature header');
+		expect((await request()).status).toBe(400);
+		expect(retrieve).not.toHaveBeenCalled();
 	});
-
-	it('returns 400 when signature verification fails', async () => {
-		mockConstructEvent.mockImplementation(() => {
-			throw new Error('Invalid signature');
+	it('grants access after confirmed Checkout and binds only the matching customer and user', async () => {
+		event('checkout.session.completed', {
+			mode: 'subscription',
+			subscription: 'sub_123',
+			metadata: { userId: 'user-1' },
 		});
-
-		const res = await webhookRequest('{}', 'bad-sig');
-		expect(res.status).toBe(400);
-		const body = await res.json();
-		expect(body.error).toBe('Invalid signature');
-	});
-
-	it('handles checkout.session.completed and sets plan to pro', async () => {
-		mockConstructEvent.mockReturnValue({
-			type: 'checkout.session.completed',
-			data: {
-				object: {
-					metadata: { userId: 'user-1' },
-					subscription: 'sub_123',
-					customer: 'cus_456',
-				} as Partial<Stripe.Checkout.Session>,
-			},
-		});
-
-		mockRetrieveSubscription.mockResolvedValue({
-			items: {
-				data: [{ price: { id: PRO_PRICE_ID }, current_period_end: 1700000000 }],
-			},
-			cancel_at_period_end: false,
-		});
-
-		const res = await webhookRequest('{"type":"checkout.session.completed"}');
-		expect(res.status).toBe(200);
-
-		expect(mockUpdate).toHaveBeenCalled();
-		expect(mockSet).toHaveBeenCalledWith(
-			expect.objectContaining({
-				plan: 'pro',
-				stripeCustomerId: 'cus_456',
-				stripeSubscriptionId: 'sub_123',
-				cancelAtPeriodEnd: false,
-			}),
+		expect((await request()).status).toBe(200);
+		expect(set).toHaveBeenCalledWith(
+			expect.objectContaining({ plan: 'pro', stripeSubscriptionId: 'sub_123' }),
 		);
-	});
-
-	it('handles customer.subscription.updated and syncs period end', async () => {
-		mockConstructEvent.mockReturnValue({
-			type: 'customer.subscription.updated',
-			data: {
-				object: {
-					id: 'sub_123',
-					items: {
-						data: [{ price: { id: PRO_PRICE_ID }, current_period_end: 1800000000 }],
-					},
-					cancel_at_period_end: true,
-				} as Partial<Stripe.Subscription>,
-			},
-		});
-
-		const res = await webhookRequest('{"type":"customer.subscription.updated"}');
-		expect(res.status).toBe(200);
-
-		expect(mockSet).toHaveBeenCalledWith(
-			expect.objectContaining({
-				cancelAtPeriodEnd: true,
-			}),
+		expect(capture).toHaveBeenCalledWith(
+			expect.objectContaining({ distinctId: 'user-1', event: 'subscription_upgraded' }),
 		);
+		const query = new PgDialect().sqlToQuery(where.mock.calls[0][0]);
+		expect(query.params).toEqual(['cus_123', 'sub_123', 'user-1']);
+		expect(query.sql).toContain('"stripe_subscription_id" is null');
 	});
-
-	it('handles customer.subscription.deleted and sets plan to free', async () => {
-		mockConstructEvent.mockReturnValue({
-			type: 'customer.subscription.deleted',
-			data: {
-				object: {
-					id: 'sub_123',
-					items: {
-						data: [{ price: { id: PRO_PRICE_ID } }],
-					},
-				} as Partial<Stripe.Subscription>,
-			},
+	it.each([
+		['active', 'pro'],
+		['trialing', 'pro'],
+		['past_due', 'pro'],
+		['incomplete', 'free'],
+		['unpaid', 'free'],
+		['paused', 'free'],
+	])('maps %s to %s, including recovery from unpaid', async (status, plan) => {
+		retrieve.mockResolvedValue(subscription(status));
+		expect((await request()).status).toBe(200);
+		expect(set).toHaveBeenCalledWith(expect.objectContaining({ plan }));
+	});
+	it.each([
+		'canceled',
+		'incomplete_expired',
+	])('clears ended subscriptions without binding stale purchases: %s', async (status) => {
+		event('checkout.session.completed', {
+			mode: 'subscription',
+			subscription: 'sub_123',
+			metadata: { userId: 'user-1' },
 		});
-
-		const res = await webhookRequest('{"type":"customer.subscription.deleted"}');
-		expect(res.status).toBe(200);
-
-		expect(mockSet).toHaveBeenCalledWith(
+		retrieve.mockResolvedValue(subscription(status));
+		expect((await request()).status).toBe(200);
+		expect(set).toHaveBeenCalledWith(
 			expect.objectContaining({
 				plan: 'free',
 				stripeSubscriptionId: null,
@@ -167,35 +123,57 @@ describe('Stripe webhook handler', () => {
 				cancelAtPeriodEnd: false,
 			}),
 		);
+		const query = new PgDialect().sqlToQuery(where.mock.calls[0][0]);
+		expect(query.params).toEqual(['cus_123', 'sub_123']);
 	});
-
-	it('ignores subscription events for other products', async () => {
-		mockConstructEvent.mockReturnValue({
-			type: 'customer.subscription.updated',
-			data: {
-				object: {
-					id: 'sub_other_product',
-					items: {
-						data: [{ price: { id: 'price_some_other_product' }, current_period_end: 1800000000 }],
-					},
-					cancel_at_period_end: false,
-				} as Partial<Stripe.Subscription>,
-			},
-		});
-
-		const res = await webhookRequest('{"type":"customer.subscription.updated"}');
-		expect(res.status).toBe(200);
-		expect(mockUpdate).not.toHaveBeenCalled();
+	it('uses current Stripe state instead of a delayed active event after cancellation', async () => {
+		event('customer.subscription.updated', subscription('active'));
+		retrieve.mockResolvedValue(subscription('canceled'));
+		await request();
+		expect(set).toHaveBeenCalledWith(expect.objectContaining({ plan: 'free' }));
 	});
-
-	it('acknowledges unhandled event types with 200', async () => {
-		mockConstructEvent.mockReturnValue({
-			type: 'invoice.paid',
-			data: { object: {} },
+	it('preserves Pro until a scheduled cancellation takes effect', async () => {
+		retrieve.mockResolvedValue({ ...subscription(), cancel_at_period_end: true });
+		await request();
+		expect(set).toHaveBeenCalledWith(
+			expect.objectContaining({
+				plan: 'pro',
+				cancelAtPeriodEnd: true,
+				currentPeriodEnd: new Date(1800000000000),
+			}),
+		);
+	});
+	it.each([
+		'customer.subscription.created',
+		'customer.subscription.deleted',
+		'customer.subscription.paused',
+		'customer.subscription.resumed',
+	])('handles %s from current state', async (type) => {
+		event(type);
+		expect((await request()).status).toBe(200);
+		expect(retrieve).toHaveBeenCalledWith('sub_123');
+	});
+	it('ignores other products on the shared GoldenBerry account', async () => {
+		retrieve.mockResolvedValue({
+			...subscription(),
+			items: { data: [{ price: { id: 'price_other' } }] },
 		});
-
-		const res = await webhookRequest('{"type":"invoice.paid"}');
-		expect(res.status).toBe(200);
-		expect(mockUpdate).not.toHaveBeenCalled();
+		expect((await request()).status).toBe(200);
+		expect(update).not.toHaveBeenCalled();
+	});
+	it('ignores unrelated checkout and event types', async () => {
+		event('checkout.session.completed', { mode: 'payment' });
+		expect((await request()).status).toBe(200);
+		event('invoice.created', {});
+		expect((await request()).status).toBe(200);
+		expect(retrieve).not.toHaveBeenCalled();
+	});
+	it('returns 500 for temporary Stripe or database failures so Stripe retries', async () => {
+		const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+		retrieve.mockRejectedValueOnce(new Error('temporarily unavailable'));
+		expect((await request()).status).toBe(500);
+		returning.mockRejectedValueOnce(new Error('database unavailable'));
+		expect((await request()).status).toBe(500);
+		log.mockRestore();
 	});
 });

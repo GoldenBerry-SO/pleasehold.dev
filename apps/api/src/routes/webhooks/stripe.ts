@@ -1,18 +1,12 @@
-// ABOUTME: Stripe webhook handler for subscription lifecycle events (checkout, update, delete).
-// ABOUTME: Verifies webhook signature, then syncs subscription state to the subscriptions table.
+// ABOUTME: Stripe webhook handler that synchronizes subscription access from Stripe's current state.
+// ABOUTME: Signed events are scoped to the configured price and the customer's existing billing record.
 
 import type { Database } from '@pleasehold/db';
 import { subscriptions } from '@pleasehold/db';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull, or } from 'drizzle-orm';
 import { Hono } from 'hono';
 import Stripe from 'stripe';
 import { posthog } from '../../lib/posthog';
-
-function isOurSubscription(sub: Stripe.Subscription): boolean {
-	const priceId = process.env.STRIPE_PRO_PRICE_ID;
-	if (!priceId) return true; // No filter configured — accept all
-	return sub.items.data.some((item) => item.price.id === priceId);
-}
 
 export function createStripeWebhookRoute(db: Database) {
 	const app = new Hono();
@@ -20,119 +14,98 @@ export function createStripeWebhookRoute(db: Database) {
 	app.post('/', async (c) => {
 		const secretKey = process.env.STRIPE_SECRET_KEY;
 		const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-		if (!secretKey || !webhookSecret) {
+		const priceId = process.env.STRIPE_PRO_PRICE_ID;
+		if (!secretKey || !webhookSecret || !priceId) {
 			return c.json({ error: 'Stripe not configured' }, 500);
 		}
 
 		const stripe = new Stripe(secretKey);
-		const body = await c.req.text();
 		const signature = c.req.header('stripe-signature');
-
-		if (!signature) {
-			return c.json({ error: 'Missing stripe-signature header' }, 400);
-		}
+		if (!signature) return c.json({ error: 'Missing stripe-signature header' }, 400);
 
 		let event: Stripe.Event;
 		try {
-			event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-		} catch (err) {
-			console.error('Stripe webhook signature verification failed:', err);
+			event = stripe.webhooks.constructEvent(await c.req.text(), signature, webhookSecret);
+		} catch {
 			return c.json({ error: 'Invalid signature' }, 400);
 		}
 
+		let subscriptionId: string | undefined;
+		let checkoutUserId: string | undefined;
 		switch (event.type) {
 			case 'checkout.session.completed': {
-				const session = event.data.object as Stripe.Checkout.Session;
-				const userId = session.metadata?.userId;
-				if (!userId || !session.subscription || !session.customer) break;
-
-				const subscriptionId =
+				const session = event.data.object;
+				if (session.mode !== 'subscription' || !session.subscription) break;
+				subscriptionId =
 					typeof session.subscription === 'string' ? session.subscription : session.subscription.id;
-				const customerId =
-					typeof session.customer === 'string' ? session.customer : session.customer.id;
-
-				// Fetch the subscription to get the current period end from items
-				const stripeSub = await stripe.subscriptions.retrieve(subscriptionId);
-				if (!isOurSubscription(stripeSub)) break;
-				const periodEnd = stripeSub.items?.data?.[0]?.current_period_end;
-
-				await db
-					.update(subscriptions)
-					.set({
-						plan: 'pro',
-						stripeCustomerId: customerId,
-						stripeSubscriptionId: subscriptionId,
-						currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
-						cancelAtPeriodEnd: stripeSub.cancel_at_period_end,
-						updatedAt: new Date(),
-					})
-					.where(eq(subscriptions.userId, userId));
-
-				posthog.capture({
-					distinctId: userId,
-					event: 'subscription_upgraded',
-					properties: { subscriptionId, customerId },
-				});
-				console.log(`Subscription activated for user ${userId}`);
+				checkoutUserId = session.metadata?.userId;
 				break;
 			}
-
-			case 'customer.subscription.updated': {
-				const sub = event.data.object as Stripe.Subscription;
-				if (!isOurSubscription(sub)) break;
-				const subscriptionId = sub.id;
-				const itemPeriodEnd = sub.items?.data?.[0]?.current_period_end;
-
-				await db
-					.update(subscriptions)
-					.set({
-						currentPeriodEnd: itemPeriodEnd ? new Date(itemPeriodEnd * 1000) : null,
-						cancelAtPeriodEnd: sub.cancel_at_period_end,
-						updatedAt: new Date(),
-					})
-					.where(eq(subscriptions.stripeSubscriptionId, subscriptionId));
-
-				posthog.capture({
-					distinctId: subscriptionId,
-					event: 'subscription_updated',
-					properties: { cancelAtPeriodEnd: sub.cancel_at_period_end },
-				});
-				console.log(`Subscription updated: ${subscriptionId}`);
+			case 'customer.subscription.created':
+			case 'customer.subscription.updated':
+			case 'customer.subscription.deleted':
+			case 'customer.subscription.paused':
+			case 'customer.subscription.resumed':
+				subscriptionId = event.data.object.id;
 				break;
-			}
-
-			case 'customer.subscription.deleted': {
-				const sub = event.data.object as Stripe.Subscription;
-				if (!isOurSubscription(sub)) break;
-				const subscriptionId = sub.id;
-
-				await db
-					.update(subscriptions)
-					.set({
-						plan: 'free',
-						stripeSubscriptionId: null,
-						currentPeriodEnd: null,
-						cancelAtPeriodEnd: false,
-						updatedAt: new Date(),
-					})
-					.where(eq(subscriptions.stripeSubscriptionId, subscriptionId));
-
-				posthog.capture({
-					distinctId: subscriptionId,
-					event: 'subscription_canceled',
-				});
-				console.log(`Subscription canceled: ${subscriptionId}`);
-				break;
-			}
-
 			default:
-				// Unhandled event type — acknowledge receipt
 				break;
+		}
+
+		if (subscriptionId) {
+			// Stripe can retry or deliver events out of order. Never restore access from an old snapshot.
+			const sub = await stripe.subscriptions.retrieve(subscriptionId);
+			const item = sub.items.data.find((item) => item.price.id === priceId);
+			if (!item) return c.json({ received: true });
+			const customerId = typeof sub.customer === 'string' ? sub.customer : sub.customer.id;
+			const userId = sub.metadata?.userId ?? checkoutUserId;
+			const ended = sub.status === 'canceled' || sub.status === 'incomplete_expired';
+			// Keep access during renewal retries; revoke it when Stripe marks the bill unpaid.
+			const plan = ['active', 'trialing', 'past_due'].includes(sub.status) ? 'pro' : 'free';
+
+			const changed = await db
+				.update(subscriptions)
+				.set({
+					plan,
+					stripeSubscriptionId: ended ? null : sub.id,
+					currentPeriodEnd:
+						!ended && item.current_period_end ? new Date(item.current_period_end * 1000) : null,
+					cancelAtPeriodEnd: !ended && sub.cancel_at_period_end,
+					updatedAt: new Date(),
+				})
+				.where(
+					and(
+						eq(subscriptions.stripeCustomerId, customerId),
+						or(
+							eq(subscriptions.stripeSubscriptionId, sub.id),
+							// Bind a new purchase even if subscription.created arrives before Checkout completes.
+							userId && !ended
+								? and(isNull(subscriptions.stripeSubscriptionId), eq(subscriptions.userId, userId))
+								: undefined,
+						),
+					),
+				)
+				.returning({ userId: subscriptions.userId });
+			if (changed.length > 0) {
+				posthog.capture({
+					distinctId: changed[0].userId,
+					event: ended
+						? 'subscription_canceled'
+						: checkoutUserId && plan === 'pro'
+							? 'subscription_upgraded'
+							: 'subscription_updated',
+					properties: {
+						subscriptionId,
+						customerId,
+						status: sub.status,
+						cancelAtPeriodEnd: sub.cancel_at_period_end,
+						$insert_id: event.id,
+					},
+				});
+			}
 		}
 
 		return c.json({ received: true });
 	});
-
 	return app;
 }

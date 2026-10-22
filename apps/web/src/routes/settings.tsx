@@ -1,12 +1,17 @@
 // ABOUTME: User-level settings page showing read-only profile information.
 // ABOUTME: Displays name and email from the authenticated session.
 
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Outlet, useMatchRoute } from '@tanstack/react-router';
 import { authClient } from '@/lib/auth-client';
 
 export const Route = createFileRoute('/settings')({
-	component: UserSettingsPage,
+	component: SettingsRoute,
 });
+
+function SettingsRoute() {
+	const matchRoute = useMatchRoute();
+	return matchRoute({ to: '/settings', fuzzy: false }) ? <UserSettingsPage /> : <Outlet />;
+}
 
 function UserSettingsPage() {
 	const { data: session, isPending } = authClient.useSession();
