@@ -20,7 +20,81 @@ const response = await fetch(
 const { data } = await response.json();`;
 ---
 
-<section class="hero">
+<section class="hero" data-motion-scene>
+  <div class="hero-atmosphere" aria-hidden="true">
+    <div class="hero-grid-plane"></div>
+    <div class="hero-aurora"></div>
+    <svg
+      class="signal-field"
+      viewBox="0 0 1440 800"
+      fill="none"
+      preserveAspectRatio="xMidYMid slice"
+    >
+      <defs>
+        <linearGradient id="signal-gradient">
+          <stop stop-color="#5dffd1" stop-opacity="0" />
+          <stop offset=".5" stop-color="#5dffd1" />
+          <stop offset="1" stop-color="#8be3ff" stop-opacity=".1" />
+        </linearGradient>
+      </defs>
+      <g class="signal-orbits" stroke="url(#signal-gradient)">
+        <ellipse
+          cx="1090"
+          cy="310"
+          rx="380"
+          ry="220"
+          transform="rotate(-24 1090 310)"
+        />
+        <ellipse
+          cx="1090"
+          cy="310"
+          rx="310"
+          ry="275"
+          transform="rotate(28 1090 310)"
+        />
+        <ellipse
+          cx="1090"
+          cy="310"
+          rx="430"
+          ry="155"
+          transform="rotate(-12 1090 310)"
+        />
+      </g>
+      <g class="signal-trails" stroke="#8affd8" stroke-width="2">
+        <ellipse
+          pathLength="100"
+          cx="1090"
+          cy="310"
+          rx="380"
+          ry="220"
+          transform="rotate(-24 1090 310)"
+        />
+        <ellipse
+          pathLength="100"
+          cx="1090"
+          cy="310"
+          rx="310"
+          ry="275"
+          transform="rotate(28 1090 310)"
+        />
+        <ellipse
+          pathLength="100"
+          cx="1090"
+          cy="310"
+          rx="430"
+          ry="155"
+          transform="rotate(-12 1090 310)"
+        />
+      </g>
+      <g class="signal-stars" fill="#98ffe0">
+        <circle cx="786" cy="96" r="2" />
+        <circle cx="1320" cy="119" r="3" />
+        <circle cx="1370" cy="450" r="2" />
+        <circle cx="732" cy="517" r="2" />
+        <circle cx="1110" cy="620" r="2" />
+      </g>
+    </svg>
+  </div>
   <div class="hero-grid container">
     <div class="hero-copy">
       <div class="eyebrow">
@@ -50,7 +124,7 @@ const { data } = await response.json();`;
       </p>
     </div>
     <div class="hero-demo">
-      <div class="code-window">
+      <div class="code-window" data-tilt>
         <div class="window-bar">
           <span class="window-dots" aria-hidden="true">
             <i></i>
@@ -107,6 +181,7 @@ const { data } = await response.json();`;
         </div>
       </div>
       <div class="entry-ticket">
+        <span class="ticket-signal" aria-hidden="true"></span>
         <div class="ticket-icon" aria-hidden="true">
           ✓
         </div>
