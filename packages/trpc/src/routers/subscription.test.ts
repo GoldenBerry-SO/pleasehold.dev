@@ -88,6 +88,7 @@ describe('subscription billing', () => {
 				{
 					metadata: { userId: 'user-1', priceId: 'price_pro' },
 					url: 'https://checkout.stripe.com/existing',
+					status: 'open',
 				},
 			],
 		});
@@ -95,6 +96,21 @@ describe('subscription billing', () => {
 			url: 'https://checkout.stripe.com/existing',
 		});
 		expect(createSession).not.toHaveBeenCalled();
+	});
+	it('starts a fresh idempotent attempt after a Checkout session expires', async () => {
+		listSessions.mockResolvedValue({
+			data: [
+				{
+					id: 'cs_expired',
+					status: 'expired',
+					metadata: { userId: 'user-1', priceId: 'price_pro' },
+				},
+			],
+		});
+		await caller.createCheckoutSession();
+		expect(createSession).toHaveBeenCalledWith(expect.anything(), {
+			idempotencyKey: 'pleasehold:checkout:user-1:price_pro:cs_expired',
+		});
 	});
 	it('creates and persists a missing customer before opening recurring Checkout', async () => {
 		findFirst.mockResolvedValue(undefined);

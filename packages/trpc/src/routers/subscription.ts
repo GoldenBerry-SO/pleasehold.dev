@@ -143,15 +143,15 @@ export const subscriptionRouter = router({
 				});
 			}
 		}
-		const openSessions = await stripe.checkout.sessions.list({
+		const sessions = await stripe.checkout.sessions.list({
 			customer: customerId,
-			status: 'open',
 			limit: 100,
 		});
-		const openSession = openSessions.data.find(
+		const previousSessions = sessions.data.filter(
 			(session) =>
 				session.metadata?.userId === ctx.user.id && session.metadata?.priceId === priceId,
 		);
+		const openSession = previousSessions.find((session) => session.status === 'open');
 		if (openSession?.url) return { url: openSession.url };
 
 		const webUrl = process.env.WEB_URL ?? 'http://localhost:5173';
@@ -168,8 +168,8 @@ export const subscriptionRouter = router({
 				subscription_data: { metadata: { userId: ctx.user.id, app: 'pleasehold' } },
 			},
 			{
-				// Concurrent clicks share a session; open sessions are also reused above.
-				idempotencyKey: `pleasehold:checkout:${ctx.user.id}:${priceId}:${Math.floor(Date.now() / 1_800_000)}`,
+				// Concurrent clicks share a session. An expired session starts a fresh attempt.
+				idempotencyKey: `pleasehold:checkout:${ctx.user.id}:${priceId}:${previousSessions[0]?.id ?? 'initial'}`,
 			},
 		);
 		if (!session.url)
