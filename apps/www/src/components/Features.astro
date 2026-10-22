@@ -27,7 +27,7 @@ const features = [
 ];
 ---
 
-<section class="features-section">
+<section class="features-section" data-motion-scene>
   <div class="container">
     <div class="section-heading">
       <div>
@@ -43,7 +43,7 @@ const features = [
         little easier.
       </p>
     </div>
-    <div class="notification-feature">
+    <div class="notification-feature" data-tilt>
       <div>
         <span class="eyebrow">An entry lands. Your team knows.</span>
         <h3>
@@ -65,7 +65,11 @@ const features = [
       </div>
       <div class="notification-visual" aria-label="Example signup notification">
         <span class="notification-route mono">
-          POST /entries <span aria-hidden="true">──────→</span> #launch-feed
+          POST /entries{" "}
+          <span class="notification-beam" aria-hidden="true">
+            <i></i>
+          </span>{" "}
+          #launch-feed
         </span>
         <div class="notification-card">
           <span class="notification-mark" aria-hidden="true">
