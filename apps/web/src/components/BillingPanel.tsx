@@ -269,7 +269,7 @@ export function BillingPanel({ source = 'billing_page' }: { source?: string }) {
 								</span>
 							</div>
 							{usage.maxEntriesPerMonth !== Number.POSITIVE_INFINITY && (
-								<div className="h-1.5 w-full rounded-full bg-muted">
+								<div className="h-1.5 w-full rounded-full bg-accent">
 									<div
 										className="h-1.5 rounded-full bg-primary transition-all"
 										style={{ width: `${entriesPercent}%` }}

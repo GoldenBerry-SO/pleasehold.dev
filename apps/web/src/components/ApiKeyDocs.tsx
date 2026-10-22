@@ -507,7 +507,7 @@ export function ApiKeyDocs({ apiKeyPrefix, apiBaseUrl }: ApiKeyDocsProps) {
 						'flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors',
 						copiedAi
 							? 'border-green-600/30 bg-green-600/10 text-green-600'
-							: 'border-border text-muted-foreground hover:bg-muted hover:text-foreground',
+							: 'border-border text-muted-foreground hover:bg-accent hover:text-foreground',
 					)}
 				>
 					{copiedAi ? (
