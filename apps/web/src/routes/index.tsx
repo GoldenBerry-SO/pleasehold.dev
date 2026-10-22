@@ -55,10 +55,13 @@ function DashboardIndex() {
 	// Returning user: show project card grid
 	return (
 		<div className="mx-auto max-w-5xl">
-			<div className="mb-4 flex items-center justify-between">
-				<div className="flex items-baseline gap-2">
+			<p className="workspace-kicker">YOUR WORKSPACE</p>
+			<div className="mb-9 flex flex-wrap items-center justify-between gap-5">
+				<div>
 					<h1 className="text-xl font-semibold text-foreground">Projects</h1>
-					<span className="text-sm text-muted">{projects.length}</span>
+					<p className="mt-2 text-sm text-muted">
+						A home for your next ideas and their first users.
+					</p>
 				</div>
 				<TooltipProvider delayDuration={200}>
 					<Tooltip>
@@ -66,7 +69,7 @@ function DashboardIndex() {
 							<span>
 								<Button
 									size="sm"
-									className="h-7 text-xs"
+									className="h-10 text-xs"
 									disabled={!canCreateProject}
 									onClick={() => setCreateOpen(true)}
 								>
@@ -84,7 +87,18 @@ function DashboardIndex() {
 				</TooltipProvider>
 			</div>
 
-			<div className="grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-3">
+			<div className="mb-5 flex items-center justify-between border-b pb-4">
+				<span className="font-mono text-[10px] uppercase tracking-widest text-muted">
+					All projects{' '}
+					<span className="ml-2 rounded bg-secondary px-2 py-1 text-secondary-foreground">
+						{projects.length}
+					</span>
+				</span>
+				<a href="/docs" className="text-xs text-primary hover:underline">
+					API documentation ↗
+				</a>
+			</div>
+			<div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
 				{projects.map((project) => (
 					<ProjectCard
 						key={project.id}

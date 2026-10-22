@@ -1,159 +1,20 @@
-<section class="relative overflow-hidden px-6 py-24 md:py-32" style="background: rgb(16, 16, 18);">
-	<canvas id="flow-field" class="pointer-events-none absolute inset-0" aria-hidden="true"></canvas>
-
-	<!-- Radial vignette -->
-	<div class="pointer-events-none absolute inset-0" aria-hidden="true"
-		style="background: radial-gradient(ellipse 65% 60% at 50% 50%, transparent 20%, rgba(16,16,18,0.92) 100%);"></div>
-	<!-- Top fade -->
-	<div class="pointer-events-none absolute inset-x-0 top-0 h-24" aria-hidden="true"
-		style="background: linear-gradient(to bottom, rgb(16,16,18), transparent);"></div>
-	<!-- Bottom fade -->
-	<div class="pointer-events-none absolute inset-x-0 bottom-0 h-24" aria-hidden="true"
-		style="background: linear-gradient(to top, rgb(16,16,18), transparent);"></div>
-
-	<div class="relative z-10 mx-auto max-w-[1080px] text-center">
-		<h2 class="text-3xl font-semibold tracking-tight text-text-primary sm:text-4xl" style="text-wrap: balance;">
-			Ship your landing page today.
-		</h2>
-		<p class="mt-4 text-base text-text-tertiary">
-			Get your API key in under a minute.
-		</p>
-		<div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-			<a
-				href="https://app.pleasehold.dev"
-				class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-			>
-				Get started
-				<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-			</a>
-			<a
-				href="https://github.com/GoldenBerry-SO/pleasehold.dev"
-				class="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary"
-			>
-				<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-					<path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-				</svg>
-				Star on GitHub
-			</a>
-		</div>
-	</div>
+<section class="final-section">
+  <div class="container final-inner">
+    <span class="final-pause" aria-hidden="true">
+      Ⅱ
+    </span>
+    <p class="eyebrow">Keep building. We’ll keep the list.</p>
+    <h2>
+      Great things
+      <br />
+      are worth waiting for.
+    </h2>
+    <p>Give your next idea somewhere to start.</p>
+    <a class="button" href="https://app.pleasehold.dev/signup">
+      Create your first project <span aria-hidden="true">↗</span>
+    </a>
+    <span class="final-index mono" aria-hidden="true">
+      YOUR NEXT CHAPTER / 001
+    </span>
+  </div>
 </section>
-
-<script>
-	const canvas = document.getElementById("flow-field") as HTMLCanvasElement;
-	if (canvas) {
-		const ctx = canvas.getContext("2d")!;
-		const dpr = window.devicePixelRatio ?? 1;
-
-		// Teal theme
-		const HUE_START = 160;
-		const HUE_RANGE = 60;
-		const SATURATION = 85;
-		const LIGHTNESS = 55;
-		const BG = "16, 16, 18";
-		const TRAIL_ALPHA = 0.06;
-		const COUNT = 60;
-
-		interface Particle {
-			x: number;
-			y: number;
-			speed: number;
-			hue: number;
-			life: number;
-			maxLife: number;
-		}
-
-		let w = 0;
-		let h = 0;
-		let animId = 0;
-		let time = 0;
-		let particles: Particle[] = [];
-
-		function fieldAngle(x: number, y: number, t: number): number {
-			const s = 0.0025;
-			return (
-				Math.sin(x * s + t * 0.0007) * Math.PI +
-				Math.cos(y * s + t * 0.0005) * Math.PI +
-				Math.sin((x + y) * s * 0.6 + t * 0.0009) * Math.PI * 0.6 +
-				Math.cos((x - y) * s * 0.4 + t * 0.0006) * Math.PI * 0.4
-			);
-		}
-
-		function spawn(): Particle {
-			const maxLife = 200 + Math.floor(Math.random() * 300);
-			return {
-				x: Math.random() * w,
-				y: Math.random() * h,
-				speed: 1.1 + Math.random() * 1.8,
-				hue: HUE_START + Math.random() * HUE_RANGE,
-				life: Math.floor(Math.random() * maxLife),
-				maxLife,
-			};
-		}
-
-		function resize() {
-			const section = canvas.parentElement!;
-			w = section.offsetWidth;
-			h = section.offsetHeight;
-			canvas.width = Math.round(w * dpr);
-			canvas.height = Math.round(h * dpr);
-			canvas.style.width = `${w}px`;
-			canvas.style.height = `${h}px`;
-			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-			ctx.fillStyle = `rgb(${BG})`;
-			ctx.fillRect(0, 0, w, h);
-			particles = Array.from({ length: COUNT }, spawn);
-		}
-
-		function render() {
-			time++;
-
-			ctx.fillStyle = `rgba(${BG}, ${TRAIL_ALPHA})`;
-			ctx.fillRect(0, 0, w, h);
-
-			for (const p of particles) {
-				const angle = fieldAngle(p.x, p.y, time);
-
-				p.x += Math.cos(angle) * p.speed;
-				p.y += Math.sin(angle) * p.speed;
-				p.life++;
-
-				if (p.life > p.maxLife) {
-					p.x = Math.random() * w;
-					p.y = Math.random() * h;
-					p.life = 0;
-					p.hue = HUE_START + Math.random() * HUE_RANGE;
-					continue;
-				}
-
-				if (p.x < 0) p.x += w;
-				else if (p.x > w) p.x -= w;
-				if (p.y < 0) p.y += h;
-				else if (p.y > h) p.y -= h;
-
-				const progress = p.life / p.maxLife;
-				const fadeIn = Math.min(progress * 8, 1);
-				const fadeOut = Math.min((1 - progress) * 6, 1);
-				const alpha = fadeIn * fadeOut * 0.9;
-
-				const hueMod = (p.hue + (angle / (Math.PI * 2)) * 70 + 360) % 360;
-
-				ctx.beginPath();
-				ctx.arc(p.x, p.y, 1.3, 0, Math.PI * 2);
-				ctx.fillStyle = `hsla(${hueMod}, ${SATURATION}%, ${LIGHTNESS}%, ${alpha})`;
-				ctx.fill();
-			}
-
-			animId = requestAnimationFrame(render);
-		}
-
-		resize();
-		window.addEventListener("resize", resize);
-		render();
-
-		document.addEventListener("astro:before-swap", () => {
-			cancelAnimationFrame(animId);
-			window.removeEventListener("resize", resize);
-		});
-	}
-</script>

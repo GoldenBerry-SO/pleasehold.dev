@@ -1,36 +1,68 @@
 ---
-const links = [
-	{ label: "Docs", href: "https://app.pleasehold.dev/docs" },
-	{ label: "GitHub", href: "https://github.com/GoldenBerry-SO/pleasehold.dev" },
-	{ label: "Pricing", href: "/#pricing" },
-];
+import Brand from "./Brand.astro";
 ---
 
-<nav class="fixed top-0 z-50 w-full border-b border-border bg-page/80 backdrop-blur-lg">
-	<div class="mx-auto flex h-14 max-w-[1080px] items-center justify-between px-6">
-		<a href="/" class="flex items-center gap-2.5">
-			<svg viewBox="0 0 32 32" class="h-5 w-5" aria-hidden="true">
-				<rect x="1" y="1" width="30" height="30" rx="6" fill="#0d9488"/>
-				<rect x="10" y="8" width="3.5" height="16" rx="1.75" fill="white"/>
-				<rect x="18.5" y="8" width="3.5" height="16" rx="1.75" fill="white"/>
-			</svg>
-			<span class="text-sm font-medium text-text-primary">pleasehold.dev</span>
-		</a>
-		<div class="flex items-center gap-6">
-			{links.map((link) => (
-				<a
-					href={link.href}
-					class="hidden text-sm text-text-tertiary transition-colors hover:text-text-primary sm:block"
-				>
-					{link.label}
-				</a>
-			))}
-			<a
-				href="https://app.pleasehold.dev"
-				class="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-			>
-				Go to app
-			</a>
-		</div>
-	</div>
-</nav>
+<header class="site-header">
+  <nav class="container nav-inner" aria-label="Main navigation">
+    <a class="brand-link" href="/" aria-label="Please Hold home">
+      <Brand />
+    </a>
+    <div class="nav-links" id="main-navigation">
+      <a href="#product">Product</a>
+      <a href="#developers">Developers</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://app.pleasehold.dev/docs">Docs ↗</a>
+    </div>
+    <div class="nav-actions">
+      <a class="nav-login" href="https://app.pleasehold.dev/login">
+        Log in
+      </a>
+      <a class="button button-small" href="https://app.pleasehold.dev/signup">
+        Start building <span aria-hidden="true">↗</span>
+      </a>
+      <button
+        class="menu-toggle"
+        aria-expanded="false"
+        aria-controls="main-navigation"
+        aria-label="Open navigation"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          aria-hidden="true"
+        >
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+</header>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+  const navigation = document.getElementById("main-navigation");
+  function closeMenu() {
+    toggle?.setAttribute("aria-expanded", "false");
+    navigation?.classList.remove("is-open");
+  }
+  toggle?.addEventListener("click", () => {
+    const open = toggle.getAttribute("aria-expanded") !== "true";
+    toggle.setAttribute("aria-expanded", String(open));
+    navigation?.classList.toggle("is-open", open);
+  });
+  navigation
+    ?.querySelectorAll("a")
+    .forEach((link) => link.addEventListener("click", closeMenu));
+  document.addEventListener("keydown", (event) => {
+    if (
+      event.key === "Escape" &&
+      toggle?.getAttribute("aria-expanded") === "true"
+    ) {
+      closeMenu();
+      toggle?.focus();
+    }
+  });
+</script>

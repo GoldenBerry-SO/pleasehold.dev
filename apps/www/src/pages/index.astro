@@ -7,18 +7,22 @@ import HowItWorks from "../components/HowItWorks.astro";
 import Features from "../components/Features.astro";
 import Pricing from "../components/Pricing.astro";
 import FinalCTA from "../components/FinalCTA.astro";
+import ProductPreview from "../components/ProductPreview.astro";
+import FAQ from "../components/FAQ.astro";
 import Footer from "../components/Footer.astro";
 ---
 
 <Layout title="pleasehold.dev — Waitlists. One API call.">
-	<Nav />
-	<main>
-		<Hero />
-		<Problem />
-		<HowItWorks />
-		<Features />
-		<Pricing />
-		<FinalCTA />
-	</main>
-	<Footer />
+  <Nav />
+  <main id="main-content">
+    <Hero />
+    <Problem />
+    <ProductPreview />
+    <HowItWorks />
+    <Features />
+    <Pricing />
+    <FAQ />
+    <FinalCTA />
+  </main>
+  <Footer />
 </Layout>

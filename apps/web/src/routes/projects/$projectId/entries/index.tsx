@@ -143,33 +143,35 @@ function EntriesPage() {
 			</div>
 
 			{/* Header with inline count */}
-			<div className="mb-1 flex items-center justify-between">
+			<div className="mb-3 flex flex-wrap items-center justify-between gap-3">
 				<div className="flex items-baseline gap-2">
 					<h1 className="text-xl font-semibold text-foreground">Entries</h1>
 					{statsData && <span className="text-sm text-muted">{statsData.total}</span>}
 				</div>
 				{project && <CsvExportButton projectId={projectId} projectName={project.name} />}
 			</div>
-			<p className="mb-4 text-sm text-muted-foreground">
+			<p className="mb-7 text-sm text-muted">
 				View, search, and manage all submissions for this project.
 			</p>
 
 			{/* Filter toolbar */}
-			<div className="mb-0.5 flex flex-col gap-2 border-b border-border/50 pb-2 md:flex-row md:items-center">
+			<div className="mb-4 flex flex-col gap-3 rounded-lg border bg-card p-3 md:flex-row md:items-center">
 				<div className="relative flex-1">
 					<Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
 					<Input
 						type="text"
-						placeholder="Filter entries..."
+						aria-label="Search entries"
+						placeholder="Search by name or email..."
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
-						className="h-8 border-0 bg-transparent pl-8 text-sm shadow-none focus-visible:ring-0"
+						className="h-9 border-0 bg-transparent pl-8 text-sm shadow-none"
 					/>
 				</div>
 				<select
+					aria-label="Filter by status"
 					value={statusFilter ?? ''}
 					onChange={(e) => setStatusFilter(e.target.value || undefined)}
-					className="h-8 rounded-md border-0 bg-transparent px-2 text-xs text-muted hover:text-foreground"
+					className="h-9 rounded-md border bg-background px-3 text-xs text-muted hover:text-foreground"
 				>
 					<option value="">All statuses</option>
 					<option value="new">New</option>

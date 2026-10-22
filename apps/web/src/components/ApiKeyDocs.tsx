@@ -444,7 +444,7 @@ function CodeBlock({
 		<div className={cn('relative', !hasFilename && 'mt-2')}>
 			<pre
 				className={cn(
-					'overflow-x-auto bg-[#1e1e2e] p-4 text-sm leading-relaxed text-gray-100',
+					'overflow-x-auto bg-[#082d29] p-4 text-sm leading-relaxed text-gray-100',
 					hasFilename ? 'rounded-b-lg rounded-tr-lg' : 'rounded-lg',
 				)}
 			>
@@ -457,7 +457,7 @@ function CodeBlock({
 					'absolute right-3 top-3 flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors',
 					copied
 						? 'bg-green-600/20 text-green-400'
-						: 'bg-white/10 text-gray-400 hover:bg-white/20 hover:text-gray-200',
+						: 'bg-white/10 text-gray-200 hover:bg-white/20 hover:text-gray-200',
 				)}
 			>
 				{copied ? (
@@ -567,7 +567,7 @@ export function ApiKeyDocs({ apiKeyPrefix, apiBaseUrl }: ApiKeyDocsProps) {
 						{step.code && (
 							<div className="mt-3 pl-9">
 								{step.filename && (
-									<div className="inline-block rounded-t-md bg-[#1e1e2e] px-3 py-1 text-xs font-medium text-gray-400">
+									<div className="inline-block rounded-t-md bg-[#082d29] px-3 py-1 text-xs font-medium text-gray-400">
 										{step.filename}
 									</div>
 								)}

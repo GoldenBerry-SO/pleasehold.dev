@@ -157,8 +157,9 @@ export function CreateProjectFlow() {
 	const companyName = form.watch('companyName');
 
 	return (
-		<div className="mx-auto max-w-lg">
+		<div className="mx-auto max-w-lg rounded-2xl border bg-card px-6 py-9 sm:px-10">
 			<div className="mb-8 text-center">
+				<p className="workspace-kicker">YOUR NEXT CHAPTER</p>
 				<h1 className="mb-2 text-2xl font-semibold text-foreground">Create your first project</h1>
 				<p className="text-sm text-muted">
 					Projects organize your signups. Let&apos;s get started.
@@ -166,7 +167,11 @@ export function CreateProjectFlow() {
 			</div>
 
 			{/* Step indicator */}
-			<div className="mb-8 flex justify-center gap-2">
+			<div
+				className="mb-8 flex justify-center gap-2"
+				role="img"
+				aria-label={`Step ${step} of ${TOTAL_STEPS}`}
+			>
 				{Array.from({ length: TOTAL_STEPS }, (_, i) => i + 1).map((s) => (
 					<div
 						key={s}
@@ -189,7 +194,12 @@ export function CreateProjectFlow() {
 								<FormItem>
 									<FormLabel>Project name</FormLabel>
 									<FormControl>
-										<Input type="text" placeholder="My Landing Page" maxLength={100} {...field} />
+										<Input
+											type="text"
+											placeholder="Your next big idea"
+											maxLength={100}
+											{...field}
+										/>
 									</FormControl>
 									<FormMessage />
 									<p className="text-xs text-muted-foreground">

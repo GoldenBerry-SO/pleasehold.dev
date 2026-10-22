@@ -46,17 +46,19 @@ const columns: ColumnDef<Entry, unknown>[] = [
 		header: ({ table }) => (
 			<input
 				type="checkbox"
+				aria-label="Select all entries on this page"
 				checked={table.getIsAllPageRowsSelected()}
 				onChange={table.getToggleAllPageRowsSelectedHandler()}
-				className="h-4 w-4 rounded border-gray-300"
+				className="h-4 w-4 rounded border-input accent-primary"
 			/>
 		),
 		cell: ({ row }) => (
 			<input
 				type="checkbox"
+				aria-label={`Select ${row.original.email}`}
 				checked={row.getIsSelected()}
 				onChange={row.getToggleSelectedHandler()}
-				className="h-4 w-4 rounded border-gray-300"
+				className="h-4 w-4 rounded border-input accent-primary"
 			/>
 		),
 		size: 32,

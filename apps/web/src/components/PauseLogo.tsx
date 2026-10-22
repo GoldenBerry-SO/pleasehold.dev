@@ -1,57 +1,27 @@
-// ABOUTME: SVG pause-button logo component for pleasehold branding.
-// ABOUTME: Used in sidebar header, empty states, and anywhere the logo mark is needed.
-
+// ABOUTME: Shared solid pause mark for the Please Hold product identity.
+// ABOUTME: Inherits its tile color; the bars adapt to the surrounding brand surface.
 import { cn } from '@/lib/utils';
 
 interface PauseLogoProps {
 	size?: number;
 	className?: string;
 }
-
 export function PauseLogo({ size = 20, className }: PauseLogoProps) {
-	const barWidth = size * 0.09;
-	const barHeight = size * 0.45;
-	const barRadius = barWidth / 2;
-	const barY = (size - barHeight) / 2;
-	const gap = size * 0.22;
-	const barX1 = (size - gap - barWidth * 2) / 2;
-	const barX2 = barX1 + barWidth + gap;
-
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			viewBox={`0 0 ${size} ${size}`}
+			viewBox="0 0 32 32"
 			width={size}
 			height={size}
-			fill="none"
 			className={cn('shrink-0', className)}
-			aria-label="pleasehold logo"
+			aria-hidden="true"
 		>
-			<rect
-				x={size * 0.03}
-				y={size * 0.03}
-				width={size * 0.94}
-				height={size * 0.94}
-				rx={size * 0.14}
-				stroke="currentColor"
-				strokeWidth={size * 0.055}
-				fill="none"
-			/>
-			<rect
-				x={barX1}
-				y={barY}
-				width={barWidth}
-				height={barHeight}
-				rx={barRadius}
-				fill="currentColor"
-			/>
-			<rect
-				x={barX2}
-				y={barY}
-				width={barWidth}
-				height={barHeight}
-				rx={barRadius}
-				fill="currentColor"
+			<rect width="32" height="32" rx="8" fill="currentColor" />
+			<path
+				d="M11 9v14M21 9v14"
+				stroke="var(--pause-bars, #b6efce)"
+				strokeWidth="3"
+				strokeLinecap="round"
 			/>
 		</svg>
 	);

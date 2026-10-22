@@ -308,7 +308,6 @@ export function BillingPanel({ source = 'billing_page' }: { source?: string }) {
 								'Custom email templates',
 								'Custom branding & colors',
 								'"Powered by pleasehold" badge removed',
-								'Up to 5 team members',
 								'Priority support',
 							].map((feat) => (
 								<li key={feat} className="flex items-center gap-2 text-sm text-foreground">

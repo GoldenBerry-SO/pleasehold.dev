@@ -1,0 +1,41 @@
+---
+const questions = [
+  {
+    q: "Does it work with my stack?",
+    a: "If your server can make an HTTP request, you’re ready. Send JSON to the entries endpoint with a project-scoped API key. Use any frontend or form library you like.",
+  },
+  {
+    q: "Can I use it for demo requests?",
+    a: "Yes. Choose the demo-booking project mode to collect names, companies, and messages alongside email addresses. Review requests and track their status in the dashboard.",
+  },
+  {
+    q: "What happens at the Free plan limit?",
+    a: "Free includes 100 new entries per month and one project. Additional new entries are rejected once the monthly limit is reached. Upgrade to Pro for unlimited entries and projects.",
+  },
+  {
+    q: "Can I host it myself?",
+    a: "Yes. Please Hold is open source under AGPL-3.0. The repository includes a Docker Compose setup, and self-hosted instances have all features unlocked.",
+  },
+];
+---
+
+<section class="faq-section container">
+  <div>
+    <p class="eyebrow">Before you start</p>
+    <h2>A few good questions.</h2>
+    <a class="text-link" href="https://app.pleasehold.dev/docs">
+      Go deeper in the docs ↗
+    </a>
+  </div>
+  <div class="faq-list">
+    {questions.map((item) => (
+      <details>
+        <summary>
+          {item.q}
+          <span aria-hidden="true">+</span>
+        </summary>
+        <p>{item.a}</p>
+      </details>
+    ))}
+  </div>
+</section>
