@@ -1,0 +1,23 @@
+---
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<span class="brand">
+  <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
+    <rect x="1" y="1" width="30" height="30" rx="9" fill="currentColor" />
+    <path
+      d="M12 10v12M20 10v12"
+      stroke="var(--brand-bars, #b6efce)"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+  </svg>
+  {!compact && (
+    <span>
+      pleasehold<span class="brand-domain">.dev</span>
+    </span>
+  )}
+</span>

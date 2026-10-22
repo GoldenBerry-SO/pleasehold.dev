@@ -2,6 +2,7 @@
 // ABOUTME: Shows project name, mode badge, brand color accent, logo thumbnail, and last activity.
 
 import { Link } from '@tanstack/react-router';
+import { ArrowUpRight, Layers } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 
@@ -40,45 +41,55 @@ export function ProjectCard({
 	logoUrl,
 	entryCount,
 }: ProjectCardProps) {
-	const accentColor = brandColor ?? (mode === 'waitlist' ? '#3b82f6' : '#8b5cf6');
+	const accentColor = brandColor ?? (mode === 'waitlist' ? '#398567' : '#8671a0');
 
 	return (
-		<Link to="/projects/$projectId" params={{ projectId: id }} className="block no-underline">
-			<Card className="overflow-hidden transition-colors hover:bg-accent">
-				<div className="h-1" style={{ backgroundColor: accentColor }} />
-				<div className="p-4">
-					<div className="mb-3 flex items-start justify-between">
-						<div className="flex items-center gap-2">
-							{logoUrl && (
-								<img
-									src={logoUrl}
-									alt=""
-									className="h-6 w-6 flex-shrink-0 rounded border border-border/50 object-contain"
-								/>
-							)}
-							<h3 className="text-sm font-semibold text-foreground">{name}</h3>
-						</div>
-						<Badge
-							variant="secondary"
-							className="border-0 px-1.5 py-0 text-[10px] font-medium text-muted-foreground"
+		<Link
+			to="/projects/$projectId"
+			params={{ projectId: id }}
+			className="group block min-w-0 no-underline"
+		>
+			<Card className="project-card gap-0 overflow-hidden p-0">
+				<div className="p-6">
+					<div className="mb-6 flex items-center justify-between gap-3">
+						<div
+							className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-background"
+							style={{ color: accentColor }}
 						>
-							{mode === 'demo-booking' ? 'Demo' : 'Waitlist'}
+							{logoUrl ? (
+								<img src={logoUrl} alt="" className="h-8 w-8 rounded-md object-contain" />
+							) : (
+								<Layers className="h-5 w-5" />
+							)}
+						</div>
+						<Badge variant="secondary" className="text-[10px] font-normal">
+							{mode === 'demo-booking' ? 'Demo requests' : 'Waitlist'}
 						</Badge>
 					</div>
-					{entryCount !== undefined && (
-						<p className="mb-3 text-lg font-semibold text-foreground">
-							{entryCount.toLocaleString()}{' '}
-							<span className="text-xs font-normal text-muted">
-								{mode === 'demo-booking' ? 'bookings' : 'waiting'}
+					<h2 className="truncate text-lg font-semibold">{name}</h2>
+					<p className="mt-2 text-xs text-muted">
+						Created{' '}
+						{new Date(createdAt).toLocaleDateString(undefined, {
+							month: 'short',
+							day: 'numeric',
+							year: 'numeric',
+						})}
+					</p>
+					<div className="mt-7 flex items-end justify-between">
+						<p>
+							<span className="font-heading text-4xl font-medium tracking-tighter">
+								{entryCount?.toLocaleString() ?? '—'}
+							</span>
+							<span className="ml-2 text-xs text-muted">
+								{mode === 'demo-booking' ? 'requests' : 'entries'}
 							</span>
 						</p>
-					)}
-					<div className="flex justify-between text-xs text-muted">
-						<span>Active {formatRelativeTime(updatedAt)}</span>
-						<span className="text-muted-foreground">
-							{new Date(createdAt).toLocaleDateString()}
-						</span>
+						<ArrowUpRight className="mb-1 h-5 w-5 text-muted transition-colors group-hover:text-primary" />
 					</div>
+				</div>
+				<div className="flex items-center gap-2 border-t bg-background/60 px-6 py-3 text-[10px] text-muted">
+					<span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: accentColor }} />
+					Updated {formatRelativeTime(updatedAt)}
 				</div>
 			</Card>
 		</Link>

@@ -1,42 +1,44 @@
 ---
 const steps = [
-	{
-		number: "1",
-		title: "Create a project",
-		description: "Choose which fields to collect. Get a project-scoped API key. You're up in under a minute.",
-	},
-	{
-		number: "2",
-		title: "Build your own form",
-		description: "Any frontend, any framework. You own the design. POST entries to one endpoint.",
-	},
-	{
-		number: "3",
-		title: "Get notified everywhere",
-		description: "Email, Slack, Discord, Telegram, or signed webhooks. Configure per project. All channels retry independently.",
-	},
+  {
+    number: "01",
+    title: "Make it yours.",
+    text: "Create a waitlist or demo-request project. Choose your fields and generate a project-scoped API key.",
+    code: "Project-scoped API key",
+  },
+  {
+    number: "02",
+    title: "Connect your form.",
+    text: "Send a JSON payload from your server. Keep your frontend, your framework, and every pixel of your brand.",
+    code: "POST /api/v1/entries",
+  },
+  {
+    number: "03",
+    title: "Meet your first users.",
+    text: "See entries in your dashboard and get notified in the tools your team already uses.",
+    code: "201 Created",
+  },
 ];
 ---
 
-<section class="px-6 py-24 md:py-32">
-	<div class="mx-auto max-w-[1080px] text-center">
-		<h2 class="text-3xl font-semibold tracking-tight text-text-primary sm:text-4xl" style="text-wrap: balance;">
-			Three steps. Full control.
-		</h2>
-		<div class="relative mt-14">
-			<!-- Connecting line (desktop only) -->
-			<div class="pointer-events-none absolute top-4 right-0 left-0 hidden h-px border-t border-dashed border-text-quaternary sm:block" aria-hidden="true"></div>
-			<div class="grid gap-12 sm:grid-cols-3 sm:gap-8">
-				{steps.map((step) => (
-					<div class="flex flex-col items-center text-center">
-						<div class="relative z-10 mb-5 flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-bold text-white">
-							{step.number}
-						</div>
-						<h3 class="text-[15px] font-medium text-text-primary">{step.title}</h3>
-						<p class="mt-2 max-w-xs text-sm leading-relaxed text-text-tertiary">{step.description}</p>
-					</div>
-				))}
-			</div>
-		</div>
-	</div>
+<section class="steps-section container" id="developers">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">A small API. A shorter to-do list.</p>
+      <h2>From idea to “you’re on the list.”</h2>
+    </div>
+    <a class="text-link" href="https://app.pleasehold.dev/docs">
+      Read the API docs <span aria-hidden="true">↗</span>
+    </a>
+  </div>
+  <div class="steps-grid">
+    {steps.map((step) => (
+      <article>
+        <span class="step-number">{step.number}</span>
+        <h3>{step.title}</h3>
+        <p>{step.text}</p>
+        <code>{step.code}</code>
+      </article>
+    ))}
+  </div>
 </section>

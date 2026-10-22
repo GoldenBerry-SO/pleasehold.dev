@@ -4,17 +4,17 @@
 import { cn } from '@/lib/utils';
 
 const statusColors: Record<string, string> = {
-	new: 'bg-blue-500',
-	contacted: 'bg-amber-500',
-	converted: 'bg-green-500',
-	archived: 'bg-gray-400',
+	new: 'bg-[#459779]',
+	contacted: 'bg-[#cba451]',
+	converted: 'bg-[#8d79aa]',
+	archived: 'bg-[#a5b2a0]',
 	pending_verification: 'bg-orange-400',
 };
 
 const statusTextColors: Record<string, string> = {
-	new: 'text-blue-700',
-	contacted: 'text-amber-700',
-	converted: 'text-green-700',
+	new: 'text-[#34664c]',
+	contacted: 'text-[#896c2b]',
+	converted: 'text-[#77608c]',
 	archived: 'text-muted',
 	pending_verification: 'text-orange-600',
 };
@@ -32,7 +32,12 @@ export function EntryStatusBadge({ status }: EntryStatusBadgeProps) {
 			: status.charAt(0).toUpperCase() + status.slice(1);
 
 	return (
-		<span className={cn('inline-flex items-center gap-1.5 text-xs font-medium', textColor)}>
+		<span
+			className={cn(
+				'inline-flex items-center gap-1.5 rounded-md border border-current/15 bg-current/5 px-2 py-1 text-[11px] font-medium',
+				textColor,
+			)}
+		>
 			<span className={cn('h-1.5 w-1.5 rounded-full', dotColor)} />
 			{label}
 		</span>

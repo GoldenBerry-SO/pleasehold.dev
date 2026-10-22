@@ -62,14 +62,14 @@ function ApiKeysPage() {
 			</div>
 
 			{/* Header with create button */}
-			<div className="mb-1 flex items-center justify-between">
+			<div className="mb-3 flex flex-wrap items-center justify-between gap-3">
 				<h1 className="text-xl font-semibold text-foreground">API Keys</h1>
-				<Button size="sm" className="h-7 text-xs" onClick={() => setDialogOpen(true)}>
+				<Button size="sm" className="h-9 text-xs" onClick={() => setDialogOpen(true)}>
 					<Plus className="mr-1 h-3.5 w-3.5" />
 					Create Key
 				</Button>
 			</div>
-			<p className="mb-4 text-sm text-muted-foreground">
+			<p className="mb-7 text-sm text-muted">
 				Create and manage API keys used to accept submissions.{' '}
 				<a
 					href="/docs"
@@ -86,7 +86,7 @@ function ApiKeysPage() {
 			<ApiKeyList projectId={projectId} />
 
 			{/* Integration docs */}
-			<div className="mt-10">
+			<div className="mt-10 rounded-xl border bg-card p-5 sm:p-7">
 				<h2 className="mb-4 text-[11px] font-semibold uppercase tracking-wider text-muted">
 					Integration Guide
 				</h2>

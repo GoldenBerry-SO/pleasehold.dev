@@ -57,10 +57,12 @@ function channelConfigSummary(type: string, config: Record<string, unknown>): st
 }
 
 function ToggleSwitch({
+	label,
 	checked,
 	onChange,
 	disabled,
 }: {
+	label: string;
 	checked: boolean;
 	onChange: (val: boolean) => void;
 	disabled?: boolean;
@@ -68,6 +70,10 @@ function ToggleSwitch({
 	return (
 		<button
 			type="button"
+			role="switch"
+			aria-label={label}
+			aria-checked={checked}
+			disabled={disabled}
 			onClick={() => !disabled && onChange(!checked)}
 			className={cn(
 				'relative h-6 w-11 shrink-0 rounded-full border-0 transition-colors',
@@ -246,7 +252,7 @@ function NotificationSettingsPage() {
 
 	if (projectError || !project) {
 		return (
-			<div className="mx-auto max-w-4xl">
+			<div className="settings-sections mx-auto max-w-4xl">
 				<div className="mb-4">
 					<Link to="/" className="text-sm text-muted hover:text-foreground">
 						&larr; Back to dashboard
@@ -260,7 +266,7 @@ function NotificationSettingsPage() {
 	}
 
 	return (
-		<div className="mx-auto max-w-4xl">
+		<div className="settings-sections mx-auto max-w-4xl">
 			{/* Back link */}
 			<div className="mb-6">
 				<Link
@@ -283,7 +289,7 @@ function NotificationSettingsPage() {
 				<h2 className="mb-2 text-[11px] uppercase tracking-wider text-muted-foreground">
 					Email Verification
 				</h2>
-				<div className="flex items-center justify-between border-t border-b border-border/50 py-3">
+				<div className="flex items-center justify-between gap-5 border-t border-border/50 pt-5">
 					<div>
 						<div className="text-sm font-medium">Require email verification</div>
 						<div className="text-xs text-muted-foreground">
@@ -291,6 +297,7 @@ function NotificationSettingsPage() {
 						</div>
 					</div>
 					<ToggleSwitch
+						label="Require email verification"
 						checked={doubleOptInData?.doubleOptIn ?? false}
 						onChange={handleDoubleOptInToggle}
 						disabled={toggleDoubleOptIn.isPending}
@@ -303,7 +310,7 @@ function NotificationSettingsPage() {
 				<h2 className="mb-2 text-[11px] uppercase tracking-wider text-muted-foreground">
 					Confirmation Email
 				</h2>
-				<div className="flex items-center justify-between border-t border-b border-border/50 py-3">
+				<div className="flex items-center justify-between gap-5 border-t border-border/50 pt-5">
 					<div>
 						<div className="text-sm font-medium">Send confirmation email</div>
 						<div className="text-xs text-muted-foreground">
@@ -311,6 +318,7 @@ function NotificationSettingsPage() {
 						</div>
 					</div>
 					<ToggleSwitch
+						label="Send confirmation email"
 						checked={confirmationEmailData?.sendConfirmationEmail ?? false}
 						onChange={handleConfirmationEmailToggle}
 						disabled={toggleConfirmationEmail.isPending}
@@ -324,6 +332,7 @@ function NotificationSettingsPage() {
 					<h2 className="text-[11px] uppercase tracking-wider text-muted-foreground">Channels</h2>
 					{!addingType && (
 						<select
+							aria-label="Add notification channel"
 							value=""
 							onChange={(e) => {
 								if (e.target.value) setAddingType(e.target.value as ChannelType);
@@ -446,6 +455,7 @@ function NotificationSettingsPage() {
 										Edit
 									</button>
 									<ToggleSwitch
+										label={`Enable ${channelTypeLabels[channel.type]} notifications`}
 										checked={channel.enabled}
 										onChange={(val) => handleToggleEnabled(channel.id, val)}
 										disabled={updateChannel.isPending}

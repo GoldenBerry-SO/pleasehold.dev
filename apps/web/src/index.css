@@ -1,42 +1,375 @@
-/* ABOUTME: Global stylesheet with Tailwind CSS v4 directives and pleasehold theme. */
-/* ABOUTME: Defines custom color palette, Inter font family, and base reset styles. */
-
+/* ABOUTME: Shared Please Hold palette, typography, and workspace surfaces. */
+/* ABOUTME: Keeps the app aligned with the public site while prioritizing readable controls. */
 @import "tailwindcss";
-
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
-  --color-background: #fafafa;
-  --color-foreground: #1a1a2e;
-  --color-muted: #6b7280;
-  --color-muted-foreground: #9ca3af;
-  --color-border: #e5e7eb;
-  --color-input: #e0e0e0;
-  --color-primary: #0d9488;
-  --color-primary-foreground: #ffffff;
-  --color-destructive: #dc2626;
-  --color-accent: #f3f4f6;
-  --color-card: #ffffff;
-  --color-sidebar: #f8f8f8;
-  --color-sidebar-border: #ebebeb;
-
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
+	--font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+	--font-heading: "Manrope", ui-sans-serif, system-ui, sans-serif;
+	--font-mono: "IBM Plex Mono", ui-monospace, monospace;
+	--color-background: #f8f8f2;
+	--color-foreground: #173c33;
+	--color-muted: #596b5d;
+	--color-muted-foreground: #5f705e;
+	--color-border: #dfe5d9;
+	--color-input: #cfdac9;
+	--color-primary: #126953;
+	--color-primary-foreground: #ffffff;
+	--color-destructive: #c13232;
+	--color-accent: #edf2e7;
+	--color-accent-foreground: #173c33;
+	--color-secondary: #e8f0e2;
+	--color-secondary-foreground: #365a40;
+	--color-card: #ffffff;
+	--color-card-foreground: #173c33;
+	--color-popover: #ffffff;
+	--color-popover-foreground: #173c33;
+	--color-ring: #5eaa87;
+	--color-sidebar: #082d29;
+	--color-sidebar-border: #ffffff18;
+	--radius-sm: 0.3rem;
+	--radius-md: 0.5rem;
+	--radius-lg: 0.75rem;
 }
-
 @layer base {
 	*,
 	*::before,
 	*::after {
 		border-color: var(--color-border);
 	}
-
 	body {
-		background-color: var(--color-background);
+		margin: 0;
+		background: var(--color-background);
 		color: var(--color-foreground);
 		font-family: var(--font-sans);
 		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
+	}
+	h1,
+	h2,
+	h3,
+	h4 {
+		font-family: var(--font-heading);
+		letter-spacing: -0.025em;
+	}
+	button,
+	a,
+	input,
+	textarea,
+	select {
+		-webkit-tap-highlight-color: transparent;
+	}
+	a:focus-visible,
+	button:focus-visible {
+		outline: 2px solid var(--color-ring);
+		outline-offset: 3px;
+	}
+	::selection {
+		background: #b6efce;
+		color: #082d29;
+	}
+}
+.app-main {
+	scrollbar-gutter: stable;
+}
+.app-main > div {
+	max-width: 1200px;
+}
+.app-main h1 {
+	font-size: 1.75rem;
+	line-height: 1.3;
+	font-weight: 650;
+	letter-spacing: -0.045em;
+	overflow-wrap: anywhere;
+}
+.workspace-kicker {
+	font-family: var(--font-mono);
+	font-size: 10px;
+	text-transform: uppercase;
+	letter-spacing: 0.12em;
+	color: var(--color-muted);
+	margin-bottom: 14px;
+}
+.workspace-sidebar {
+	--pause-bars: #082d29;
+	--color-muted: #abc3b1;
+	--color-muted-foreground: #9bb5a2;
+	--color-foreground: #edf6e9;
+	--color-accent: #b6efce14;
+	--color-border: #ffffff18;
+	color: #edf6e9;
+}
+.workspace-sidebar .sidebar-link {
+	min-height: 40px;
+	padding: 10px 12px;
+}
+.workspace-sidebar .sidebar-link[aria-current="page"] {
+	background: #b6efce18;
+	color: #d8f4df;
+}
+.workspace-sidebar [data-slot="separator"] {
+	background: #ffffff15;
+}
+.workspace-sidebar .sidebar-brand {
+	color: #f0f6e9;
+	font-family: var(--font-heading);
+	font-size: 23px;
+	font-weight: 800;
+	letter-spacing: -1px;
+}
+.workspace-sidebar .sidebar-brand svg {
+	color: #b6efce;
+}
+.project-card {
+	transition:
+		box-shadow 0.2s,
+		transform 0.2s,
+		border-color 0.2s;
+}
+.project-card:hover {
+	transform: translateY(-3px);
+	border-color: #aecab2;
+	box-shadow: 0 12px 28px -20px #16453266;
+}
+.project-tools {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+}
+.project-tools > a {
+	padding: 20px;
+	border: 1px solid var(--color-border);
+	border-radius: 10px;
+	background: white;
+}
+.project-tools > a:first-child {
+	grid-column: 1 / -1;
+	background: #edf3e7;
+	border-color: #cfdfc7;
+}
+[data-slot="table-container"] {
+	border-radius: 9px;
+	background: white;
+}
+[data-slot="table-header"] {
+	background: #f0f4e9;
+}
+[data-slot="table-head"] {
+	font-family: var(--font-mono);
+	font-size: 9px;
+	height: 42px;
+	padding-inline: 14px;
+	color: #596c54;
+}
+[data-slot="table-cell"] {
+	padding: 13px 14px;
+}
+[data-slot="table-row"][data-state="selected"] {
+	background: #e7f2e7;
+}
+[data-slot="card"] {
+	box-shadow: 0 2px 4px #14352903;
+}
+.auth-layout {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	min-height: 100dvh;
+}
+.auth-story {
+	background: #082d29;
+	color: #eff7e9;
+	padding: 48px clamp(36px, 5vw, 88px);
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	overflow: hidden;
+}
+.auth-brand {
+	display: flex;
+	align-items: center;
+	gap: 11px;
+	font-family: var(--font-heading);
+	font-size: 24px;
+	font-weight: 800;
+	letter-spacing: -1px;
+	width: fit-content;
+}
+.auth-brand svg {
+	color: #b6efce;
+	--pause-bars: #082d29;
+}
+.auth-story-content {
+	margin-block: auto;
+	padding-block: 70px;
+	position: relative;
+	z-index: 1;
+}
+.auth-story .workspace-kicker {
+	color: #a3c5ad;
+	font-size: 10px;
+}
+.auth-story h2 {
+	font-size: clamp(42px, 4.3vw, 66px);
+	line-height: 1.12;
+	font-weight: 600;
+	letter-spacing: -0.06em;
+}
+.auth-story h2 span {
+	color: #b6efce;
+}
+.auth-story-content > p {
+	color: #aac4b1;
+	max-width: 340px;
+	font-size: 14px;
+	line-height: 1.9;
+	margin-top: 24px;
+}
+.auth-code {
+	margin-top: 38px;
+	border: 1px solid #ffffff20;
+	border-radius: 9px;
+	padding: 22px;
+	background: #ffffff04;
+	max-width: 410px;
+	font-family: var(--font-mono);
+	font-size: 11px;
+	line-height: 2;
+}
+.auth-code > div {
+	color: #93b19c;
+	font-size: 9px;
+	margin-bottom: 12px;
+	letter-spacing: 0.07em;
+}
+.auth-code code {
+	color: #d6ebd7;
+	display: block;
+	overflow-wrap: anywhere;
+}
+.auth-code .auth-response {
+	border-top: 1px solid #ffffff15;
+	margin: 15px 0 0;
+	padding-top: 12px;
+	color: #b6efce;
+	letter-spacing: 0;
+}
+.auth-story-footer {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 16px;
+	font-size: 10px;
+	color: #a3bba8;
+	position: relative;
+}
+.auth-form-panel {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 64px 30px;
+	position: relative;
+}
+.auth-form-panel > div {
+	width: 100%;
+	max-width: 380px;
+}
+.auth-form-panel h1 {
+	font-size: 29px;
+	font-weight: 650;
+	letter-spacing: -1.2px;
+	line-height: 1.3;
+}
+.auth-form-panel input {
+	height: 46px;
+	background: white;
+}
+.auth-form-panel button[data-slot="button"] {
+	min-height: 46px;
+}
+.auth-form-panel .auth-form-note {
+	margin-top: 36px;
+	font-size: 10px;
+	color: var(--color-muted);
+	text-align: center;
+}
+.auth-mobile-brand {
+	display: none;
+}
+@media (min-width: 1500px) {
+	.app-main {
+		padding-inline: 56px;
+	}
+}
+@media (max-width: 1000px) {
+	.auth-layout {
+		grid-template-columns: 0.9fr 1fr;
+	}
+	.auth-story {
+		padding: 40px 30px;
+	}
+	.auth-story h2 {
+		font-size: 44px;
+	}
+	.auth-code {
+		padding: 18px;
+		font-size: 10px;
+	}
+}
+@media (max-width: 767px) {
+	.app-main h1 {
+		font-size: 25px;
+	}
+	.project-tools {
+		grid-template-columns: 1fr;
+	}
+	.auth-layout {
+		display: block;
+	}
+	.auth-story {
+		display: none;
+	}
+	.auth-form-panel {
+		min-height: 100dvh;
+		padding: 36px 24px;
+	}
+	.auth-mobile-brand {
+		display: flex;
+		color: #173c33;
+		font-size: 23px;
+		margin-bottom: 48px;
+	}
+	.auth-mobile-brand svg {
+		color: #173c33;
+		--pause-bars: #b6efce;
+	}
+	.auth-form-panel h1 {
+		font-size: 28px;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation: none !important;
+		transition: none !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+.settings-sections > .mb-8 {
+	border: 1px solid var(--color-border);
+	border-radius: 12px;
+	background: var(--color-card);
+	padding: 24px;
+}
+.settings-sections h2 {
+	font-family: var(--font-mono);
+	font-size: 10px;
+	letter-spacing: 0.08em;
+}
+.settings-sections .mb-8 .mb-8 {
+	margin-bottom: 0;
+}
+@media (max-width: 520px) {
+	.settings-sections > .mb-8 {
+		padding: 20px 16px;
 	}
 }

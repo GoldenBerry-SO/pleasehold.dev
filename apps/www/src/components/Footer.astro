@@ -1,25 +1,32 @@
-<footer class="border-t border-border px-6 py-10">
-	<div class="mx-auto max-w-[1080px]">
-		<div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
-			<div class="flex items-center gap-2.5">
-				<svg viewBox="0 0 32 32" class="h-5 w-5" aria-hidden="true">
-					<rect x="1" y="1" width="30" height="30" rx="6" fill="#0d9488"/>
-					<rect x="10" y="8" width="3.5" height="16" rx="1.75" fill="white"/>
-					<rect x="18.5" y="8" width="3.5" height="16" rx="1.75" fill="white"/>
-				</svg>
-				<span class="text-sm font-medium text-text-secondary">pleasehold.dev</span>
-			</div>
-			<nav class="flex gap-6 text-sm text-text-quaternary">
-				<a href="https://app.pleasehold.dev" class="transition-colors hover:text-text-secondary">Dashboard</a>
-				<a href="https://app.pleasehold.dev/docs" class="transition-colors hover:text-text-secondary">API Docs</a>
-				<a href="https://github.com/GoldenBerry-SO/pleasehold.dev" class="transition-colors hover:text-text-secondary">GitHub</a>
-			</nav>
-		</div>
-		<div class="mt-8 border-t border-border pt-6 text-center text-sm text-text-quaternary sm:text-left">
-			<p>Products that empower, not replace.</p>
-			<p class="mt-1">
-				Built by <a href="https://pixeltowers.io" class="text-text-tertiary transition-colors hover:text-text-secondary">PixelTowers.io</a>
-			</p>
-		</div>
-	</div>
+---
+import Brand from "./Brand.astro";
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-main">
+      <div>
+        <a href="/" class="brand-link" aria-label="Please Hold home">
+          <Brand />
+        </a>
+        <p>
+          Waitlists. One API call.
+          <br />
+          Built for people who build.
+        </p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <a href="https://app.pleasehold.dev">Dashboard ↗</a>
+        <a href="https://app.pleasehold.dev/docs">API docs ↗</a>
+        <a href="https://github.com/GoldenBerry-SO/pleasehold.dev">GitHub ↗</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>
+        A product by{" "}
+        <a href="https://goldenberry.studio">GoldenBerry Studio ↗</a>
+      </span>
+      <span class="mono">Open source · AGPL-3.0</span>
+    </div>
+  </div>
 </footer>

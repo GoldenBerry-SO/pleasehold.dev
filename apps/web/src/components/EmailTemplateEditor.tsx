@@ -73,6 +73,7 @@ export function EmailTemplateEditor({
 			Placeholder.configure({ placeholder: 'Write your email body here...' }),
 		],
 		content: bodyHtml,
+		editorProps: { attributes: { 'aria-label': 'Email body' } },
 		onUpdate: ({ editor: e }) => {
 			onBodyHtmlChange(e.getHTML());
 		},
@@ -88,6 +89,7 @@ export function EmailTemplateEditor({
 			<div>
 				<div className="mb-1 text-xs text-muted-foreground">Subject Line</div>
 				<Input
+					aria-label="Subject line"
 					value={subject}
 					onChange={(e) => onSubjectChange(e.target.value)}
 					placeholder="Confirm your email for {{project_name}}"
@@ -99,6 +101,7 @@ export function EmailTemplateEditor({
 			<div>
 				<div className="mb-1 text-xs text-muted-foreground">Button Text</div>
 				<Input
+					aria-label="Button text"
 					value={buttonText}
 					onChange={(e) => onButtonTextChange(e.target.value)}
 					placeholder="Verify Email Address"
@@ -159,47 +162,56 @@ export function EmailTemplateEditor({
 							{[
 								{
 									icon: Bold,
+									label: 'Bold',
 									action: () => editor.chain().focus().toggleBold().run(),
 									active: editor.isActive('bold'),
 								},
 								{
 									icon: Italic,
+									label: 'Italic',
 									action: () => editor.chain().focus().toggleItalic().run(),
 									active: editor.isActive('italic'),
 								},
 								{
 									icon: Heading2,
+									label: 'Heading',
 									action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
 									active: editor.isActive('heading', { level: 2 }),
 								},
 								{
 									icon: List,
+									label: 'Bullet list',
 									action: () => editor.chain().focus().toggleBulletList().run(),
 									active: editor.isActive('bulletList'),
 								},
 								{
 									icon: ListOrdered,
+									label: 'Numbered list',
 									action: () => editor.chain().focus().toggleOrderedList().run(),
 									active: editor.isActive('orderedList'),
 								},
 								{
 									icon: Code,
+									label: 'Code block',
 									action: () => editor.chain().focus().toggleCodeBlock().run(),
 									active: editor.isActive('codeBlock'),
 								},
 								{
 									icon: LinkIcon,
+									label: 'Insert link',
 									action: () => {
 										const url = window.prompt('URL:');
 										if (url) editor.chain().focus().setLink({ href: url }).run();
 									},
 									active: editor.isActive('link'),
 								},
-							].map(({ icon: Icon, action, active }, i) => (
+							].map(({ icon: Icon, action, active, label }, i) => (
 								<button
 									key={`toolbar-${Icon.displayName ?? i}`}
 									type="button"
 									onClick={action}
+									aria-label={label}
+									aria-pressed={active}
 									className={cn(
 										'rounded p-1.5 transition-colors',
 										active ? 'bg-accent text-foreground' : 'text-muted-foreground hover:bg-accent',
@@ -212,7 +224,7 @@ export function EmailTemplateEditor({
 					)}
 					<EditorContent
 						editor={editor}
-						className="prose prose-sm max-w-none rounded-md border border-border/50 p-3 text-sm min-h-[200px] focus-within:ring-1 focus-within:ring-ring [&_.ProseMirror]:outline-none [&_.ProseMirror-focused]:outline-none"
+						className="prose prose-sm max-w-none rounded-md bg-card border border-border/50 p-3 text-sm min-h-[200px] focus-within:ring-1 focus-within:ring-ring [&_.ProseMirror]:outline-none [&_.ProseMirror-focused]:outline-none"
 					/>
 				</div>
 			) : (

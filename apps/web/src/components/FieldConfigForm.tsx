@@ -25,13 +25,16 @@ function ToggleSwitch({
 	description: string;
 }) {
 	return (
-		<div className="flex items-center justify-between border-b border-gray-100 py-3">
+		<div className="flex items-center justify-between gap-4 border-b border-gray-100 py-3">
 			<div>
 				<div className="text-sm font-medium">{label}</div>
 				<div className="text-xs text-muted-foreground">{description}</div>
 			</div>
 			<button
 				type="button"
+				role="switch"
+				aria-label={`Collect ${label.toLowerCase()}`}
+				aria-checked={checked}
 				onClick={() => onChange(!checked)}
 				className={cn(
 					'relative h-6 w-11 shrink-0 rounded-full border-0 transition-colors',
@@ -83,7 +86,7 @@ export function FieldConfigForm({
 			<h3 className="mb-4 text-base font-semibold">Field Configuration</h3>
 
 			{/* Email is always required */}
-			<div className="flex items-center justify-between border-b border-gray-100 py-3">
+			<div className="flex items-center justify-between gap-4 border-b border-gray-100 py-3">
 				<div>
 					<div className="text-sm font-medium">Email</div>
 					<div className="text-xs text-muted-foreground">Primary contact field</div>

@@ -6,7 +6,6 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { PauseLogo } from '@/components/PauseLogo';
 import { Button } from '@/components/ui/button';
 import {
 	Form,
@@ -84,14 +83,12 @@ function SignupPage() {
 	const anyLoading = form.formState.isSubmitting || oauthLoading !== null;
 
 	return (
-		<div className="w-full max-w-sm px-4">
-			<div className="mb-8 flex flex-col items-center gap-3">
-				<PauseLogo size={40} className="text-foreground" />
-				<h1 className="text-xl font-bold text-foreground">pleasehold</h1>
-			</div>
-
-			<h2 className="mb-1 text-lg font-semibold text-foreground">Create your account</h2>
-			<p className="mb-6 text-sm text-muted">Get started with pleasehold in seconds.</p>
+		<div className="w-full">
+			<p className="workspace-kicker">YOUR NEXT CHAPTER</p>
+			<h1 className="mb-3">Make room for your first users.</h1>
+			<p className="mb-8 text-sm leading-relaxed text-muted">
+				Start free with 100 entries a month. No credit card required.
+			</p>
 
 			<div className="mb-6 flex flex-col gap-3">
 				<Button
@@ -123,7 +120,7 @@ function SignupPage() {
 							<FormItem className="mb-4">
 								<FormLabel>Name</FormLabel>
 								<FormControl>
-									<Input type="text" {...field} />
+									<Input type="text" autoComplete="name" placeholder="Your name" {...field} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -137,7 +134,12 @@ function SignupPage() {
 							<FormItem className="mb-4">
 								<FormLabel>Email</FormLabel>
 								<FormControl>
-									<Input type="email" {...field} />
+									<Input
+										type="email"
+										autoComplete="email"
+										placeholder="you@company.com"
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -151,7 +153,7 @@ function SignupPage() {
 							<FormItem className="mb-6">
 								<FormLabel>Password</FormLabel>
 								<FormControl>
-									<Input type="password" {...field} />
+									<Input type="password" autoComplete="new-password" {...field} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>

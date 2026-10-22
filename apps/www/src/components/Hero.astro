@@ -1,122 +1,182 @@
 ---
-const curlCommand = `curl -X POST https://app.pleasehold.dev/api/v1/entries \\
+import { Code } from "astro:components";
+const curl = `curl https://app.pleasehold.dev/api/v1/entries \\
+  -X POST \\
   -H "Content-Type: application/json" \\
-  -H "x-api-key: ph_live_your_key_here" \\
-  -d '{"email": "user@example.com"}'`;
-
-const jsonResponse = `{
-  "data": {
-    "id": "a1b2c3d4-...",
-    "email": "user@example.com",
-    "position": 42,
-    "createdAt": "2026-01-15T09:30:00.000Z"
+  -H "x-api-key: $PLEASEHOLD_API_KEY" \\
+  -d '{"email": "ada@example.com"}'`;
+const javascript = `// Run on your server
+const response = await fetch(
+  "https://app.pleasehold.dev/api/v1/entries",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": process.env.PLEASEHOLD_API_KEY
+    },
+    body: JSON.stringify({ email: "ada@example.com" })
   }
-}`;
+);
+const { data } = await response.json();`;
 ---
 
-<section class="relative px-6 pt-32 pb-24 md:pt-44 md:pb-32">
-	<canvas id="hero-waves" class="pointer-events-none absolute inset-0 z-0 opacity-30" aria-hidden="true"></canvas>
-	<div class="relative z-10 mx-auto max-w-[1080px] text-center">
-		<h1 class="mx-auto max-w-3xl text-4xl font-semibold tracking-tight text-text-primary sm:text-5xl lg:text-6xl" style="line-height: 1.1; text-wrap: balance;">
-			Waitlists. One API call.
-		</h1>
-
-		<p class="mx-auto mt-6 max-w-xl text-lg text-text-tertiary" style="text-wrap: pretty;">
-			No embeddable widget. No referral gimmicks. Just an API endpoint, your own form, and notifications where your team actually works.
-		</p>
-
-		<div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-			<a
-				href="https://app.pleasehold.dev"
-				class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-			>
-				Go to app
-				<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-			</a>
-			<a
-				href="https://github.com/GoldenBerry-SO/pleasehold.dev"
-				class="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary"
-			>
-				<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-					<path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-				</svg>
-				View on GitHub
-			</a>
-		</div>
-
-		<!-- Terminal -->
-		<div class="mx-auto mt-16 max-w-2xl overflow-hidden rounded-xl border border-border text-left">
-			<div class="flex items-center gap-1.5 border-b border-border px-4 py-3">
-				<div class="h-2.5 w-2.5 rounded-full bg-[rgba(255,255,255,0.08)]"></div>
-				<div class="h-2.5 w-2.5 rounded-full bg-[rgba(255,255,255,0.08)]"></div>
-				<div class="h-2.5 w-2.5 rounded-full bg-[rgba(255,255,255,0.08)]"></div>
-			</div>
-			<div class="overflow-x-auto p-5">
-				<pre class="font-mono text-[13px] leading-relaxed"><code><span class="text-text-quaternary">$</span> <span class="text-green">{curlCommand}</span></code></pre>
-				<div class="mt-4 border-t border-border pt-4">
-					<pre class="font-mono text-[13px] leading-relaxed"><code class="text-purple">{jsonResponse}</code></pre>
-				</div>
-			</div>
-		</div>
-	</div>
+<section class="hero">
+  <div class="hero-grid container">
+    <div class="hero-copy">
+      <div class="eyebrow">
+        <span class="status-dot"></span> The API for your next launch
+      </div>
+      <h1>
+        Waitlists.
+        <br />
+        <span>One API call.</span>
+      </h1>
+      <p class="hero-description">
+        Your form. Your brand. Your next big thing.
+        <br class="desktop-break" /> Collect early interest and demo requests
+        with an API that fits the way you build.
+      </p>
+      <div class="hero-actions">
+        <a class="button" href="https://app.pleasehold.dev/signup">
+          Start building for free <span aria-hidden="true">↗</span>
+        </a>
+        <a class="text-link" href="https://app.pleasehold.dev/docs">
+          Explore the API <span aria-hidden="true">→</span>
+        </a>
+      </div>
+      <p class="hero-note">
+        100 entries / month free <span aria-hidden="true">·</span> No credit
+        card required
+      </p>
+    </div>
+    <div class="hero-demo">
+      <div class="code-window">
+        <div class="window-bar">
+          <span class="window-dots" aria-hidden="true">
+            <i></i>
+            <i></i>
+            <i></i>
+          </span>
+          <span>One endpoint. Endless possibilities.</span>
+          <span class="mono">↗</span>
+        </div>
+        <div class="code-toolbar">
+          <div class="code-tabs" aria-label="Code language">
+            <button
+              class="code-tab"
+              aria-pressed="true"
+              aria-controls="snippet-curl"
+              data-language="curl"
+            >
+              cURL
+            </button>
+            <button
+              class="code-tab"
+              aria-pressed="false"
+              aria-controls="snippet-javascript"
+              data-language="javascript"
+            >
+              Node.js
+            </button>
+          </div>
+          <button class="copy-code" aria-label="Copy code example">
+            Copy <span aria-hidden="true">⧉</span>
+          </button>
+        </div>
+        <div class="code-content" id="snippet-curl">
+          <Code code={curl} lang="bash" theme="github-dark" />
+        </div>
+        <div class="code-content" id="snippet-javascript" hidden>
+          <Code code={javascript} lang="javascript" theme="github-dark" />
+        </div>
+        <div class="code-bottom">
+          <span>
+            <span class="method">POST</span> /api/v1/entries
+          </span>
+          <button
+            class="preview-response"
+            aria-expanded="false"
+            aria-controls="example-response"
+          >
+            Preview response <span aria-hidden="true">↗</span>
+          </button>
+        </div>
+        <div class="response-code" id="example-response" hidden>
+          <span class="response-status">201 Created · Example response</span>
+          <pre><code>{`{ "data": { "email": "ada@example.com", "position": 42 } }`}</code></pre>
+        </div>
+      </div>
+      <div class="entry-ticket">
+        <div class="ticket-icon" aria-hidden="true">
+          ✓
+        </div>
+        <div>
+          <span class="eyebrow">One more reason to ship</span>
+          <strong>You’re on the list.</strong>
+          <span class="ticket-caption">An example of your next signup.</span>
+        </div>
+        <span class="ticket-position">#0042</span>
+      </div>
+      <output id="code-feedback" class="sr-only" aria-live="polite"></output>
+    </div>
+  </div>
+  <div class="container hero-footer">
+    <span class="mono">Made for your stack</span>
+    <div>
+      <span>Next.js</span>
+      <span>Astro</span>
+      <span>Remix</span>
+      <span>Laravel</span>
+      <span>Anything that speaks HTTP</span>
+    </div>
+    <a href="https://github.com/GoldenBerry-SO/pleasehold.dev">
+      <span aria-hidden="true">⌘</span> Open source, always ↗
+    </a>
+  </div>
 </section>
-
 <script>
-	import { createNoise3D } from "simplex-noise";
-
-	const canvas = document.getElementById("hero-waves") as HTMLCanvasElement;
-	if (canvas) {
-		const ctx = canvas.getContext("2d")!;
-		const noise = createNoise3D();
-		let w: number, h: number;
-		let nt = 0;
-		let animationId: number;
-
-		const colors = [
-			"#0d9488",
-			"#0f766e",
-			"#14b8a6",
-			"#2dd4bf",
-			"#0d9488",
-		];
-
-		function resize() {
-			const section = canvas.parentElement!;
-			w = ctx.canvas.width = section.offsetWidth;
-			h = ctx.canvas.height = section.offsetHeight;
-			ctx.filter = "blur(20px)";
-		}
-
-		function drawWave(n: number) {
-			nt += 0.001;
-			for (let i = 0; i < n; i++) {
-				ctx.beginPath();
-				ctx.lineWidth = 50;
-				ctx.strokeStyle = colors[i % colors.length];
-				for (let x = 0; x < w; x += 5) {
-					const y = noise(x / 800, 0.3 * i, nt) * 100;
-					ctx.lineTo(x, y + h * 0.75);
-				}
-				ctx.stroke();
-				ctx.closePath();
-			}
-		}
-
-		function render() {
-			ctx.fillStyle = "#101012";
-			ctx.globalAlpha = 0.5;
-			ctx.fillRect(0, 0, w, h);
-			drawWave(5);
-			animationId = requestAnimationFrame(render);
-		}
-
-		resize();
-		window.addEventListener("resize", resize);
-		render();
-
-		document.addEventListener("astro:before-swap", () => {
-			cancelAnimationFrame(animationId);
-			window.removeEventListener("resize", resize);
-		});
-	}
+  const tabs = document.querySelectorAll<HTMLButtonElement>(
+    ".code-tab[data-language]",
+  );
+  let currentLanguage = "curl";
+  for (const tab of tabs)
+    tab.addEventListener("click", () => {
+      currentLanguage = tab.dataset.language ?? "curl";
+      for (const other of tabs) {
+        const selected = other === tab;
+        other.setAttribute("aria-pressed", String(selected));
+        const snippet = document.getElementById(
+          `snippet-${other.dataset.language}`,
+        );
+        if (snippet) snippet.hidden = !selected;
+      }
+    });
+  const copyButton = document.querySelector<HTMLButtonElement>(".copy-code");
+  copyButton?.addEventListener("click", async () => {
+    const feedback = document.getElementById("code-feedback");
+    try {
+      await navigator.clipboard.writeText(
+        document.querySelector(`#snippet-${currentLanguage} pre`)
+          ?.textContent ?? "",
+      );
+      copyButton.textContent = "Copied ✓";
+      if (feedback) feedback.textContent = "Code example copied.";
+    } catch {
+      if (feedback)
+        feedback.textContent =
+          "Copy unavailable. Select and copy the code example.";
+      copyButton.textContent = "Select code to copy";
+    }
+    setTimeout(() => {
+      copyButton.textContent = "Copy ⧉";
+    }, 2500);
+  });
+  const preview =
+    document.querySelector<HTMLButtonElement>(".preview-response");
+  preview?.addEventListener("click", () => {
+    const response = document.getElementById("example-response");
+    if (!response) return;
+    response.hidden = !response.hidden;
+    preview.setAttribute("aria-expanded", String(!response.hidden));
+  });
 </script>

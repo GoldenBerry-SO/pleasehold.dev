@@ -1,0 +1,138 @@
+---
+const entries = [
+  {
+    initials: "AL",
+    name: "Ada Lovelace",
+    email: "ada@example.com",
+    status: "New",
+    position: "042",
+    color: "mint",
+  },
+  {
+    initials: "GH",
+    name: "Grace Hopper",
+    email: "grace@example.com",
+    status: "Contacted",
+    position: "041",
+    color: "sand",
+  },
+  {
+    initials: "AT",
+    name: "Alan Turing",
+    email: "alan@example.com",
+    status: "Converted",
+    position: "040",
+    color: "lilac",
+  },
+];
+---
+
+<section class="product-section container" aria-label="Dashboard preview">
+  <div class="product-frame">
+    <div class="product-frame-bar">
+      <span class="window-dots" aria-hidden="true">
+        <i></i>
+        <i></i>
+        <i></i>
+      </span>
+      <span>app.pleasehold.dev</span>
+      <span class="example-tag">Example project</span>
+    </div>
+    <div class="product-layout">
+      <aside class="preview-sidebar" aria-label="Preview navigation">
+        <div class="preview-wordmark">
+          <span class="pause-mini" aria-hidden="true">
+            Ⅱ
+          </span>{" "}
+          pleasehold
+        </div>
+        <span class="preview-nav-label">WORKSPACE</span>
+        <span class="preview-nav-item">▦ &nbsp; Projects</span>
+        <span class="preview-nav-label">YOUR PROJECTS</span>
+        <span class="preview-nav-item active">
+          <span class="status-dot"></span> Orbit launch
+        </span>
+        <span class="preview-nav-item">◈ &nbsp; Studio demos</span>
+        <span class="preview-sidebar-bottom">
+          ⌘ &nbsp; Your next idea starts here.
+        </span>
+      </aside>
+      <div class="preview-main">
+        <div class="preview-breadcrumb">
+          Projects <span>/</span> Orbit launch
+        </div>
+        <div class="preview-heading">
+          <div>
+            <h3>Orbit launch</h3>
+            <p>Your first users, all in one place.</p>
+          </div>
+          <span class="preview-mode">Waitlist</span>
+        </div>
+        <div class="preview-stats">
+          <div>
+            <span>Total entries</span>
+            <strong>
+              42{" "}
+              <span class="mini-bars" aria-hidden="true">
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+              </span>
+            </strong>
+          </div>
+          <div>
+            <span>New</span>
+            <strong>
+              28 <small>Ready to connect</small>
+            </strong>
+          </div>
+          <div>
+            <span>Converted</span>
+            <strong>
+              8 <small>From interest to action</small>
+            </strong>
+          </div>
+        </div>
+        <div class="preview-table-label">
+          <h4>Latest entries</h4>
+          <span class="mono">↓ CSV export</span>
+        </div>
+        <div class="preview-table">
+          <div class="preview-table-head">
+            <span>NAME / EMAIL</span>
+            <span>STATUS</span>
+            <span>POSITION</span>
+          </div>
+          {entries.map((entry) => (
+            <div class="preview-table-row">
+              <div class="preview-person">
+                <span class:list={["avatar", entry.color]}>
+                  {entry.initials}
+                </span>
+                <div>
+                  <strong>{entry.name}</strong>
+                  <span>{entry.email}</span>
+                </div>
+              </div>
+              <span class:list={["entry-badge", entry.color]}>
+                {entry.status}
+              </span>
+              <span class="mono">#{entry.position}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="product-caption">
+    <p>A clear view of the people waiting for what you’re making.</p>
+    <a class="text-link" href="https://app.pleasehold.dev/signup">
+      Make room for your first users <span aria-hidden="true">↗</span>
+    </a>
+  </div>
+</section>

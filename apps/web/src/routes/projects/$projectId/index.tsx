@@ -8,22 +8,16 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useProject } from '@/hooks/useProjects';
 import { trpc } from '@/lib/trpc';
-import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/projects/$projectId/')({
 	component: ProjectOverviewPage,
 });
 
-const modeBadgeFallbackClasses: Record<string, string> = {
-	waitlist: 'bg-blue-100 text-blue-700 hover:bg-blue-100',
-	'demo-booking': 'bg-violet-100 text-violet-700 hover:bg-violet-100',
-};
-
 const statusColors: Record<string, string> = {
-	new: '#3b82f6',
-	contacted: '#f59e0b',
-	converted: '#22c55e',
-	archived: '#9ca3af',
+	new: '#459779',
+	contacted: '#cba451',
+	converted: '#8d79aa',
+	archived: '#a5b2a0',
 };
 
 const statusLabels: Record<string, string> = {
@@ -185,45 +179,36 @@ function ProjectOverviewPage() {
 
 	return (
 		<div className="mx-auto max-w-4xl">
-			{/* Header — compact, no excessive top margin */}
-			<div className="mb-1 flex flex-wrap items-center justify-between gap-2">
+			<p className="workspace-kicker">
+				<Link to="/" className="hover:text-primary">
+					Projects
+				</Link>
+				<span className="px-3 opacity-50">/</span>Overview
+			</p>
+			<div className="mb-3 flex flex-wrap items-center justify-between gap-2">
 				<div className="flex flex-wrap items-center gap-3">
 					<h1 className="text-xl font-semibold text-foreground">{project.name}</h1>
-					{project.brandColor ? (
-						<Badge
-							variant="secondary"
-							className="border-0 px-1.5 py-0 text-[10px] font-medium text-white"
-							style={{ backgroundColor: project.brandColor }}
-						>
-							{project.mode === 'demo-booking' ? 'Demo Booking' : 'Waitlist'}
-						</Badge>
-					) : (
-						<Badge
-							variant="secondary"
-							className={cn(
-								'border-0 text-[10px] font-medium px-1.5 py-0',
-								modeBadgeFallbackClasses[project.mode],
-							)}
-						>
-							{project.mode === 'demo-booking' ? 'Demo Booking' : 'Waitlist'}
-						</Badge>
-					)}
+					<Badge variant="secondary" className="gap-1.5 px-2 py-1 text-[10px] font-medium">
+						<span
+							className="h-1.5 w-1.5 rounded-full"
+							style={{ backgroundColor: project.brandColor ?? '#398567' }}
+						/>
+						{project.mode === 'demo-booking' ? 'Demo requests' : 'Waitlist'}
+					</Badge>
 				</div>
-				<Button variant="outline" size="sm" className="h-7 text-xs" asChild>
+				<Button variant="outline" size="sm" className="h-9 text-xs" asChild>
 					<Link to="/projects/$projectId/settings" params={{ projectId }}>
 						<Settings className="mr-1 h-3.5 w-3.5" />
 						Settings
 					</Link>
 				</Button>
 			</div>
-			<p className="mb-4 text-sm text-muted-foreground">
-				At a glance stats and quick links for your project.
-			</p>
+			<p className="mb-8 text-sm text-muted">Your first users, all in one place.</p>
 
 			{/* Graph cards row */}
-			<div className="mb-6 grid grid-cols-1 gap-3 md:grid-cols-3">
+			<div className="mb-9 grid grid-cols-1 gap-4 lg:grid-cols-3">
 				{/* Total entries card with donut */}
-				<Card className="p-4">
+				<Card className="gap-3 p-6">
 					<div className="mb-3 text-[11px] uppercase tracking-wider text-muted-foreground">
 						Total Entries
 					</div>
@@ -239,7 +224,7 @@ function ProjectOverviewPage() {
 				</Card>
 
 				{/* Status breakdown card */}
-				<Card className="p-4">
+				<Card className="gap-3 p-6">
 					<div className="mb-3 text-[11px] uppercase tracking-wider text-muted-foreground">
 						By Status
 					</div>
@@ -263,7 +248,7 @@ function ProjectOverviewPage() {
 				</Card>
 
 				{/* Quick stats card */}
-				<Card className="p-4">
+				<Card className="gap-3 p-6">
 					<div className="mb-3 text-[11px] uppercase tracking-wider text-muted-foreground">
 						Configuration
 					</div>
@@ -292,10 +277,10 @@ function ProjectOverviewPage() {
 
 			{/* Navigation links */}
 			<div>
-				<h2 className="mb-2 text-[11px] uppercase tracking-wider text-muted-foreground">
-					Navigation
+				<h2 className="mb-4 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+					Keep your launch moving
 				</h2>
-				<div className="border-t border-border/50">
+				<div className="project-tools">
 					<Link
 						to="/projects/$projectId/entries"
 						params={{ projectId }}

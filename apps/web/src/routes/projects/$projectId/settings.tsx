@@ -141,7 +141,7 @@ function ProjectSettingsPage() {
 
 	if (error || !project) {
 		return (
-			<div className="mx-auto max-w-4xl">
+			<div className="settings-sections mx-auto max-w-4xl">
 				<div className="mb-4">
 					<Link
 						to="/"
@@ -164,7 +164,7 @@ function ProjectSettingsPage() {
 	};
 
 	return (
-		<div className="mx-auto max-w-4xl">
+		<div className="settings-sections mx-auto max-w-4xl">
 			{/* Breadcrumb */}
 			<div className="mb-6">
 				<Link

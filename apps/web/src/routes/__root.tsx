@@ -8,6 +8,7 @@ import {
 	redirect,
 	useMatchRoute,
 } from '@tanstack/react-router';
+import { AuthLayout } from '@/components/AuthLayout';
 import { NotFoundContent } from '@/components/NotFoundContent';
 import { Toaster } from '@/components/ui/sonner';
 import { authClient } from '@/lib/auth-client';
@@ -47,10 +48,10 @@ function RootLayout() {
 
 	if (isAuthPage) {
 		return (
-			<div className="flex min-h-screen items-center justify-center bg-background">
+			<AuthLayout>
 				<Outlet />
 				<Toaster />
-			</div>
+			</AuthLayout>
 		);
 	}
 
