@@ -101,7 +101,7 @@ if ('IntersectionObserver' in window) {
 		{ threshold: 0.08 },
 	);
 	for (const el of document.querySelectorAll<HTMLElement>(
-		'.hero-copy > *, .hero-demo, .intro-section > *, .product-section, .section-heading, .steps-grid article, .notification-feature, .feature-grid article, .pricing-card, .self-host, .faq-section > *, .final-inner > :not([aria-hidden])',
+		'.hero-copy > *, .hero-demo, .intro-section > *, .product-section, .section-heading, .steps-grid article, .notification-feature, .feature-grid article, .pricing-card, .self-host, .open-source-copy, .self-host-panel, .faq-section > *, .final-inner > :not([aria-hidden])',
 	))
 		revealObserver.observe(el);
 	for (const parent of document.querySelectorAll(
