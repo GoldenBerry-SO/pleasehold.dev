@@ -1190,6 +1190,7 @@ h2 {
 }
 .footer-main nav {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 35px;
 	padding-top: 8px;
 	font-size: 12px;
@@ -2207,6 +2208,188 @@ html[data-motion="on"] [data-motion-scene][data-visible="true"] *::after {
 		right: 10px;
 		font-size: 9px;
 		padding: 7px 10px;
+	}
+}
+
+.hero-source-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px 24px;
+	margin-top: 22px;
+	font-size: 11px;
+	font-weight: 500;
+	color: var(--mint);
+}
+.hero-source-links a:hover,
+.source-license:hover {
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+.hero-source-links a span {
+	margin-left: 5px;
+}
+.open-source-section {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	align-items: center;
+	gap: 80px;
+	padding-block: 100px 0;
+}
+.open-source-copy > .eyebrow {
+	color: var(--mint);
+	margin-bottom: 20px;
+}
+.open-source-copy h2 {
+	font-size: 48px;
+}
+.open-source-description {
+	color: var(--muted);
+	font-size: 15px;
+	line-height: 1.9;
+	margin-top: 24px;
+	max-width: 440px;
+}
+.source-license {
+	display: inline-flex;
+	align-items: center;
+	gap: 16px;
+	font-size: 10px;
+	color: var(--mint);
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	padding: 6px 10px;
+	margin-top: 20px;
+}
+.open-source-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 24px;
+	margin-top: 30px;
+}
+.open-source-actions .text-link {
+	font-size: 12px;
+}
+.self-host-panel {
+	position: relative;
+	min-width: 0;
+	padding: 36px;
+	border: 1px solid #426a59;
+	border-radius: 12px;
+	background: radial-gradient(ellipse at 100% 0%, #23574055, transparent 70%), var(--surface);
+}
+.self-host-panel-heading {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	color: var(--mint);
+}
+.self-host-panel-heading .eyebrow {
+	font-size: 9px;
+}
+.self-host-panel h3 {
+	font-size: 29px;
+	line-height: 1.3;
+	letter-spacing: -0.8px;
+	margin-top: 22px;
+}
+.self-host-panel > p {
+	color: var(--muted);
+	font-size: 13px;
+	line-height: 1.8;
+	margin-top: 15px;
+}
+.self-host-panel ul {
+	list-style: none;
+	display: grid;
+	gap: 14px;
+	padding: 0;
+	margin: 24px 0;
+	font-size: 12px;
+}
+.self-host-panel li {
+	display: flex;
+	gap: 12px;
+}
+.self-host-panel li > span {
+	color: var(--mint);
+}
+.self-host-command {
+	border-block: 1px solid var(--line);
+	padding-block: 20px;
+	margin-bottom: 24px;
+}
+.self-host-command p {
+	color: var(--muted);
+	font-size: 9px;
+	line-height: 1.7;
+	margin-bottom: 10px;
+}
+.self-host-command code {
+	font-family: var(--font-mono);
+	font-size: 14px;
+	color: var(--mint);
+}
+.self-host-command code > span {
+	color: var(--muted);
+}
+.self-host-panel > .self-host-ops {
+	font-size: 10px;
+	margin-top: 12px;
+}
+@media (max-width: 1050px) {
+	.open-source-section {
+		gap: 40px;
+	}
+	.self-host-panel {
+		padding: 28px;
+	}
+}
+@media (max-width: 800px) {
+	.open-source-section {
+		grid-template-columns: 1fr;
+		gap: 32px;
+		padding-top: 75px;
+	}
+	.open-source-description {
+		max-width: 550px;
+	}
+	.open-source-copy h2 {
+		font-size: 42px;
+	}
+}
+@media (max-width: 520px) {
+	.hero-source-links {
+		font-size: 10px;
+		gap: 12px 18px;
+		margin-top: 18px;
+	}
+	.open-source-section {
+		padding-top: 64px;
+	}
+	.open-source-copy h2 {
+		font-size: 36px;
+	}
+	.open-source-description {
+		font-size: 13px;
+	}
+	.open-source-actions {
+		gap: 20px;
+	}
+	.self-host-panel {
+		padding: 24px;
+	}
+	.self-host-panel h3 {
+		font-size: 27px;
+	}
+	.self-host-panel-heading .eyebrow {
+		font-size: 8px;
+	}
+	.self-host-panel-heading svg {
+		flex-shrink: 0;
+	}
+	.self-host-command code {
+		font-size: 12px;
 	}
 }
 
