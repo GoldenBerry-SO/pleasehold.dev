@@ -2393,6 +2393,81 @@ html[data-motion="on"] [data-motion-scene][data-visible="true"] *::after {
 	}
 }
 
+/* GoldenBerry's signature: a small rotating cast, paused with the page motion. */
+.studio-signature {
+  font-size: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+}
+.studio-signature > span {
+  white-space: nowrap;
+}
+.studio-emoji {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.4em;
+  overflow: hidden;
+  vertical-align: -0.32em;
+  text-align: center;
+}
+.studio-emoji-track {
+  display: block;
+  animation: studio-emoji-roll 12.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation-play-state: paused;
+}
+.studio-emoji-track > span {
+  display: block;
+  height: 1.4em;
+  line-height: 1.4em;
+}
+.studio-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@keyframes studio-emoji-roll {
+  0%,
+  10% {
+    transform: translateY(-0em);
+  }
+  12.5%,
+  22.5% {
+    transform: translateY(-1.4em);
+  }
+  25%,
+  35% {
+    transform: translateY(-2.8em);
+  }
+  37.5%,
+  47.5% {
+    transform: translateY(-4.2em);
+  }
+  50%,
+  60% {
+    transform: translateY(-5.6em);
+  }
+  62.5%,
+  72.5% {
+    transform: translateY(-7em);
+  }
+  75%,
+  85% {
+    transform: translateY(-8.4em);
+  }
+  87.5%,
+  97.5% {
+    transform: translateY(-9.8em);
+  }
+  100% {
+    transform: translateY(-11.2em);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
 	html {
 		scroll-behavior: auto;
