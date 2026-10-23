@@ -2,11 +2,11 @@
 import Brand from "./Brand.astro";
 ---
 
-<footer class="site-footer">
+<footer class="site-footer" data-motion-scene>
   <div class="container">
     <div class="footer-main">
       <div>
-        <a href="/" class="brand-link" aria-label="Please Hold home">
+        <a href="/" class="brand-link" aria-label="pleasehold.dev home">
           <Brand />
         </a>
         <p>
@@ -25,10 +25,26 @@ import Brand from "./Brand.astro";
       </nav>
     </div>
     <div class="footer-bottom">
-      <span>
-        A product by{" "}
-        <a href="https://goldenberry.studio">GoldenBerry Studio ↗</a>
-      </span>
+      <div class="studio-signature">
+        <a href="https://goldenberry.studio">A GoldenBerry Studio product ↗</a>
+        <span>
+          Made with{" "}
+          <span class="studio-emoji" aria-hidden="true">
+            <span class="studio-emoji-track">
+              <span>🍇</span>
+              <span>❤️</span>
+              <span>🎧</span>
+              <span>☕️</span>
+              <span>🥐</span>
+              <span>⌨️</span>
+              <span>🌻</span>
+              <span>🎙️</span>
+              <span>🍇</span>
+            </span>
+          </span>
+          <span class="studio-sr-only">care</span> in Berlin 🇪🇺
+        </span>
+      </div>
       <span class="mono">Open source · AGPL-3.0</span>
     </div>
   </div>
