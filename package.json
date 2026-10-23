@@ -20,7 +20,7 @@
 		"overrides": {
 			"zod": "^4.3.6",
 			"@tanstack/router-generator>zod": "^3.25.76",
-			"@tanstack/router-plugin>zod": "^3.25.76",
+			"@tanstack/router-plugin>zod": "^4.0.0",
 			"astro>zod": "^3.25.76"
 		}
 	},
