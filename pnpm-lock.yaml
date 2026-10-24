@@ -6,7 +6,7 @@ settings:
 
 overrides:
   zod: ^4.6.6
-  '@tanstack/router-generator>zod': ^3.25.76
+  '@tanstack/router-generator>zod': ^4.0.0
   '@tanstack/router-plugin>zod': ^4.0.0
   astro>zod: ^3.25.76
 
@@ -9039,7 +9039,7 @@ snapshots:
       recast: 0.23.11
       source-map: 0.7.6
       tsx: 4.21.0
-      zod: 3.25.76
+      zod: 4.6.6
     transitivePeerDependencies:
       - supports-color
 
