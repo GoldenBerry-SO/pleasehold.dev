@@ -7,7 +7,7 @@ settings:
 overrides:
   zod: ^4.6.6
   '@tanstack/router-generator>zod': ^3.25.76
-  '@tanstack/router-plugin>zod': ^3.25.76
+  '@tanstack/router-plugin>zod': ^4.0.0
   astro>zod: ^3.25.76
 
 importers:
@@ -8434,7 +8434,7 @@ snapshots:
       '@tanstack/virtual-file-routes': 1.161.4
       chokidar: 3.6.0
       unplugin: 2.3.11
-      zod: 3.25.76
+      zod: 4.3.6
     optionalDependencies:
       '@tanstack/react-router': 1.163.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       vite: 6.4.4(@types/node@25.3.1)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)
