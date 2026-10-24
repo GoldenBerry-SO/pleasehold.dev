@@ -19,7 +19,7 @@
 		"//overrides": "Dual zod: v4 global, v3 for @tanstack/router-* and astro (no v4 support yet). See scripts/patch-pruned-lockfile.mjs for Docker implications.",
 		"overrides": {
 			"zod": "^4.6.6",
-			"@tanstack/router-generator>zod": "^3.25.76",
+			"@tanstack/router-generator>zod": "^4.0.0",
 			"@tanstack/router-plugin>zod": "^4.0.0",
 			"astro>zod": "^3.25.76"
 		}
