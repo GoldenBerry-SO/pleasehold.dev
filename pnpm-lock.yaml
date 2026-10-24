@@ -43,13 +43,13 @@ importers:
         version: 3.999.0
       '@hono/node-server':
         specifier: ^1.14.0
-        version: 1.19.15(hono@4.12.2)
+        version: 1.19.15(hono@4.13.7)
       '@hono/trpc-server':
         specifier: ^0.4.2
-        version: 0.4.2(@trpc/server@11.10.0(typescript@5.7.3))(hono@4.12.2)
+        version: 0.4.2(@trpc/server@11.10.0(typescript@5.7.3))(hono@4.13.7)
       '@hono/zod-openapi':
         specifier: ^1.2.2
-        version: 1.2.2(hono@4.12.2)(zod@4.6.6)
+        version: 1.2.2(hono@4.13.7)(zod@4.6.6)
       '@pleasehold/auth':
         specifier: workspace:*
         version: link:../../packages/auth
@@ -61,7 +61,7 @@ importers:
         version: link:../../packages/trpc
       '@scalar/hono-api-reference':
         specifier: ^0.9.45
-        version: 0.9.45(hono@4.12.2)
+        version: 0.9.45(hono@4.13.7)
       better-auth:
         specifier: ^1.4.19
         version: 1.4.19(drizzle-kit@0.31.9)(drizzle-orm@0.45.2(@opentelemetry/api@1.9.0)(kysely@0.28.11)(postgres@3.4.8))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vitest@4.0.18(@opentelemetry/api@1.9.0)(@types/node@22.19.11)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
@@ -73,10 +73,10 @@ importers:
         version: 0.45.2(@opentelemetry/api@1.9.0)(kysely@0.28.11)(postgres@3.4.8)
       hono:
         specifier: ^4.12.2
-        version: 4.12.2
+        version: 4.13.7
       hono-rate-limiter:
         specifier: ^0.5.3
-        version: 0.5.3(hono@4.12.2)(unstorage@1.17.4(ioredis@5.9.3))
+        version: 0.5.3(hono@4.13.7)(unstorage@1.17.4(ioredis@5.9.3))
       ioredis:
         specifier: ^5
         version: 5.9.3
@@ -297,7 +297,7 @@ importers:
     devDependencies:
       hono:
         specifier: ^4.12.2
-        version: 4.12.2
+        version: 4.13.7
       tsup:
         specifier: ^8.3.5
         version: 8.5.1(jiti@2.6.1)(postcss@8.5.31)(tsx@4.21.0)(typescript@5.7.3)(yaml@2.8.2)
@@ -4091,8 +4091,8 @@ packages:
       unstorage:
         optional: true
 
-  hono@4.12.2:
-    resolution: {integrity: sha512-gJnaDHXKDayjt8ue0n8Gs0A007yKXj4Xzb8+cNjZeYsSzzwKc0Lr+OZgYwVfB0pHfUs17EPoLvrOsEaJ9mj+Tg==}
+  hono@4.13.7:
+    resolution: {integrity: sha512-c8/gF9ac8Y78/agExVocyLevgR+JlpNB444Py0FSX8pJoPdYUfUzRcXtYEYGwt6l19qIlVZPN5Mfsw9jFShmQQ==}
     engines: {node: '>=16.9.0'}
 
   html-escaper@3.0.3:
@@ -6686,26 +6686,26 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
-  '@hono/node-server@1.19.15(hono@4.12.2)':
+  '@hono/node-server@1.19.15(hono@4.13.7)':
     dependencies:
-      hono: 4.12.2
+      hono: 4.13.7
 
-  '@hono/trpc-server@0.4.2(@trpc/server@11.10.0(typescript@5.7.3))(hono@4.12.2)':
+  '@hono/trpc-server@0.4.2(@trpc/server@11.10.0(typescript@5.7.3))(hono@4.13.7)':
     dependencies:
       '@trpc/server': 11.10.0(typescript@5.7.3)
-      hono: 4.12.2
+      hono: 4.13.7
 
-  '@hono/zod-openapi@1.2.2(hono@4.12.2)(zod@4.6.6)':
+  '@hono/zod-openapi@1.2.2(hono@4.13.7)(zod@4.6.6)':
     dependencies:
       '@asteasolutions/zod-to-openapi': 8.4.3(zod@4.6.6)
-      '@hono/zod-validator': 0.7.6(hono@4.12.2)(zod@4.6.6)
-      hono: 4.12.2
+      '@hono/zod-validator': 0.7.6(hono@4.13.7)(zod@4.6.6)
+      hono: 4.13.7
       openapi3-ts: 4.5.0
       zod: 4.6.6
 
-  '@hono/zod-validator@0.7.6(hono@4.12.2)(zod@4.6.6)':
+  '@hono/zod-validator@0.7.6(hono@4.13.7)(zod@4.6.6)':
     dependencies:
-      hono: 4.12.2
+      hono: 4.13.7
       zod: 4.6.6
 
   '@hookform/resolvers@5.2.2(react-hook-form@7.71.2(react@19.2.4))':
@@ -7896,10 +7896,10 @@ snapshots:
 
   '@scalar/helpers@0.2.16': {}
 
-  '@scalar/hono-api-reference@0.9.45(hono@4.12.2)':
+  '@scalar/hono-api-reference@0.9.45(hono@4.13.7)':
     dependencies:
       '@scalar/core': 0.3.42
-      hono: 4.12.2
+      hono: 4.13.7
 
   '@scalar/types@0.6.7':
     dependencies:
@@ -8434,7 +8434,7 @@ snapshots:
       '@tanstack/virtual-file-routes': 1.161.4
       chokidar: 3.6.0
       unplugin: 2.3.11
-      zod: 4.3.6
+      zod: 4.6.6
     optionalDependencies:
       '@tanstack/react-router': 1.163.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       vite: 6.4.4(@types/node@25.3.1)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)
@@ -9588,13 +9588,13 @@ snapshots:
       property-information: 7.1.0
       space-separated-tokens: 2.0.2
 
-  hono-rate-limiter@0.5.3(hono@4.12.2)(unstorage@1.17.4(ioredis@5.9.3)):
+  hono-rate-limiter@0.5.3(hono@4.13.7)(unstorage@1.17.4(ioredis@5.9.3)):
     dependencies:
-      hono: 4.12.2
+      hono: 4.13.7
     optionalDependencies:
       unstorage: 1.17.4(ioredis@5.9.3)
 
-  hono@4.12.2: {}
+  hono@4.13.7: {}
 
   html-escaper@3.0.3: {}
 
