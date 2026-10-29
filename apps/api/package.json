@@ -16,7 +16,7 @@
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.999.0",
 		"@aws-sdk/s3-request-presigner": "^3.999.0",
-		"@hono/node-server": "^1.14.0",
+		"@hono/node-server": "^2.0.0",
 		"@hono/trpc-server": "^0.4.2",
 		"@hono/zod-openapi": "^1.2.2",
 		"@pleasehold/auth": "workspace:*",
