@@ -1,6 +1,7 @@
 // ABOUTME: Better Auth configuration factory with email/password and API key plugin support.
 // ABOUTME: Configures session handling, social providers (env-gated), and project-scoped API keys.
 
+import { apiKey } from '@better-auth/api-key';
 import {
 	accounts,
 	apikeys,
@@ -9,9 +10,8 @@ import {
 	sessions,
 	verifications,
 } from '@pleasehold/db';
-import { betterAuth } from 'better-auth';
+import { type BetterAuthOptions, betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { apiKey } from 'better-auth/plugins';
 
 export interface AuthOptions {
 	/** Database instance */
@@ -36,7 +36,15 @@ export interface AuthOptions {
 	sendEmail?: (to: string, subject: string, html: string) => Promise<void>;
 }
 
-export function createAuth(options: AuthOptions) {
+/** The options shape handed to betterAuth(); naming it keeps the emitted instance type small enough for the compiler. */
+export type AuthConfig = Omit<BetterAuthOptions, 'plugins'> & {
+	plugins: [ReturnType<typeof apiKey>];
+};
+
+/** The Better Auth instance createAuth returns. */
+export type Auth = ReturnType<typeof betterAuth<AuthConfig>>;
+
+export function createAuth(options: AuthOptions): Auth {
 	const socialProviders: Record<string, { clientId: string; clientSecret: string }> = {};
 	if (options.googleClientId && options.googleClientSecret) {
 		socialProviders.google = {
@@ -51,7 +59,7 @@ export function createAuth(options: AuthOptions) {
 		};
 	}
 
-	return betterAuth({
+	const config: AuthConfig = {
 		trustedOrigins: options.trustedOrigins,
 		database: drizzleAdapter(options.db, {
 			provider: 'pg',
@@ -99,6 +107,8 @@ export function createAuth(options: AuthOptions) {
 			apiKey({
 				defaultPrefix: 'ph_live_',
 				enableMetadata: true,
+				// The plugin names the owner column referenceId; the apikeys table keeps it as user_id.
+				schema: { apikey: { fields: { referenceId: 'userId' } } },
 				...(options.disableApiKeyRateLimit ? { rateLimit: { enabled: false } } : {}),
 			}),
 		],
@@ -117,7 +127,8 @@ export function createAuth(options: AuthOptions) {
 				},
 			},
 		},
-	});
+	};
+	return betterAuth(config);
 }
 
 function buildVerificationEmailHtml(url: string): string {

@@ -1,7 +1,7 @@
 // ABOUTME: Browser-side Better Auth client factory with API key plugin support.
 // ABOUTME: Used by the web dashboard -- imports only client-safe dependencies.
 
-import { apiKeyClient } from 'better-auth/client/plugins';
+import { apiKeyClient } from '@better-auth/api-key/client';
 import { createAuthClient as createBetterAuthClient } from 'better-auth/react';
 
 export interface AuthClientOptions {

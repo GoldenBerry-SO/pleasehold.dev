@@ -45,7 +45,7 @@ export async function verifyProjectKey(
 
 		return {
 			valid: true,
-			userId: result.key?.userId,
+			userId: result.key?.referenceId,
 			keyId: result.key?.id,
 		};
 	} catch {

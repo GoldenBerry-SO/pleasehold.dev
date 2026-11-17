@@ -57,6 +57,7 @@ export const apikeys = pgTable(
 	'apikeys',
 	{
 		id: text('id').primaryKey(),
+		configId: text('config_id').notNull().default('default'),
 		name: text('name'),
 		start: text('start'),
 		prefix: text('prefix'),
@@ -85,5 +86,6 @@ export const apikeys = pgTable(
 		index('apikeys_user_id_idx').on(table.userId),
 		index('apikeys_key_idx').on(table.key),
 		index('apikeys_enabled_idx').on(table.enabled),
+		index('apikeys_config_id_idx').on(table.configId),
 	],
 );

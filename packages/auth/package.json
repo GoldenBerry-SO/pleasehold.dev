@@ -28,7 +28,8 @@
 	},
 	"dependencies": {
 		"@pleasehold/db": "workspace:*",
-		"better-auth": "^1.4.18"
+		"@better-auth/api-key": "^1.7.25",
+		"better-auth": "^1.7.25"
 	},
 	"devDependencies": {
 		"hono": "^4.12.2",
