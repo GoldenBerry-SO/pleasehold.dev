@@ -9,5 +9,5 @@ export default defineConfig({
 	dts: true,
 	clean: true,
 	sourcemap: true,
-	external: ['better-auth/react', 'better-auth/client/plugins'],
+	external: ['better-auth/react', '@better-auth/api-key/client'],
 });

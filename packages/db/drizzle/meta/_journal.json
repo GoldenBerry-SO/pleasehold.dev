@@ -50,6 +50,13 @@
       "when": 1772698120940,
       "tag": "0006_subscriptions",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794904609871,
+      "tag": "0007_apikeys-config-id",
+      "breakpoints": true
     }
   ]
 }

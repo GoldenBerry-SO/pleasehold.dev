@@ -14,5 +14,5 @@ export default defineConfig({
 		js: "import { createRequire } from 'module'; const require = createRequire(import.meta.url);",
 	},
 	noExternal: [/@pleasehold\/.*/],
-	external: ['better-auth', 'better-auth/adapters/drizzle', 'better-auth/plugins'],
+	external: ['better-auth', 'better-auth/adapters/drizzle', '@better-auth/api-key'],
 });
